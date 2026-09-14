@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0d0d">
-<title>Finanzas Personales v1.5</title>
+<title>Finanzas Personales v1.5.1</title>
 <style>
   :root{
     --bg:#0d0d0d;
@@ -468,7 +468,7 @@
 <div class="app">
   <header>
     <div class="header-top">
-      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5</small></div>
+      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5.1</small></div>
       <div class="total-balance">
         <div class="label">Balance líquido</div>
         <div class="amount" id="totalBalance">$0.00</div>
@@ -490,6 +490,7 @@
       <button class="tab" data-view="movements">📋 Movimientos</button>
       <button class="tab" data-view="recurring">🔁 Recurrentes</button>
       <button class="tab" data-view="patrimony">🏛️ Patrimonio</button>
+      <button class="tab" data-view="planning">🎯 Presupuesto</button>
       <button class="tab" data-view="categories">🏷️ Categorías</button>
       <button class="tab" data-view="reports">📊 Informes</button>
     </div>
@@ -571,9 +572,20 @@
         <button onclick="openCategorySheet('expense')">+ Añadir</button>
       </div>
       <div id="expenseCatsList"></div>
-      <div class="section-title" style="margin-top:12px">Presupuestos por categoría <button onclick="openBudgetSheet()">+ Añadir</button></div>
+    </section>
+
+    <!-- PLANNING / BUDGETS -->
+    <section class="view" id="view-planning">
+      <div class="section-title">Presupuestos mensuales <button onclick="openBudgetSheet()">+ Añadir</button></div>
+      <div class="subtle" style="margin-bottom:10px">
+        Define cuánto quieres gastar como máximo en cada categoría durante el mes.
+      </div>
       <div id="budgetsList"></div>
-      <div class="section-title" style="margin-top:12px">Metas de ahorro <button onclick="openGoalSheet()">+ Añadir</button></div>
+
+      <div class="section-title" style="margin-top:18px">Metas de ahorro <button onclick="openGoalSheet()">+ Añadir</button></div>
+      <div class="subtle" style="margin-bottom:10px">
+        Lleva el avance de tus objetivos de ahorro.
+      </div>
       <div id="goalsList"></div>
     </section>
 
@@ -653,7 +665,7 @@
 
 <script>
 /* ============================================================
-   FINANZAS PERSONALES v1.4
+   FINANZAS PERSONALES v1.5.1
    Nuevo: Transferencias entre cuentas
    ============================================================ */
 
