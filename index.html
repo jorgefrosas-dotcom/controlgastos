@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0d0d">
-<title>Finanzas Personales v1.4</title>
+<title>Finanzas Personales v1.5</title>
 <style>
   :root{
     --bg:#0d0d0d;
@@ -442,13 +442,33 @@
   }
   .balance-hint strong{color:var(--text-dim);font-weight:600}
   .balance-hint .err{color:var(--red)}
+
+/* ===================== v1.5 responsive/mobile layer ===================== */
+.header-tools{display:flex;gap:7px;margin-top:9px;justify-content:flex-end}
+.header-tools button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:9px;padding:7px 9px;font:600 11px inherit;cursor:pointer}
+.filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
+.filter-panel input,.filter-panel select{font-size:13px;padding:10px 11px}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.subtle{font-size:11.5px;color:var(--text-mute)}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px}
+.dash-card .dlabel{font-size:10.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.35px}
+.dash-card .dvalue{font-size:16px;font-weight:700;margin-top:2px}
+.progress{height:7px;background:var(--surface-3);border-radius:8px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;border-radius:8px;background:var(--accent)}
+.progress i.over{background:var(--red)}
+.budget-item,.goal-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px}
+.item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.item-main{min-width:0}.item-title{font-size:13.5px;font-weight:650}.item-sub{font-size:11px;color:var(--text-mute);margin-top:2px}.item-actions{display:flex;gap:5px}.icon-btn{background:var(--surface-3);border:0;color:var(--text-dim);border-radius:8px;padding:7px;cursor:pointer}
+.trend-wrap{display:grid;gap:8px}.trend-row{display:grid;grid-template-columns:48px 1fr 75px;align-items:center;gap:8px;font-size:11px}.trend-bars{height:34px;display:flex;gap:3px;align-items:end}.trend-bar{flex:1;min-width:3px;border-radius:3px 3px 0 0;background:var(--accent);opacity:.8}.trend-bar.exp{background:var(--red)}
+.compare-row{display:grid;grid-template-columns:minmax(80px,1fr) 70px 70px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:11.5px}.compare-row:last-child{border-bottom:0}.delta-pos{color:var(--green)}.delta-neg{color:var(--red)}
+@media(max-width:380px){main{padding:12px}.tab{padding:8px 11px}.tx{gap:8px;padding:10px}.tx-amt{font-size:13px}.filter-grid{grid-template-columns:1fr}.header-tools{justify-content:stretch}.header-tools button{flex:1}}
+@media(min-width:900px){.header-tools{position:absolute;right:26px;bottom:8px}.header-tools button{font-size:12px}.filter-grid{grid-template-columns:2fr 1fr 1fr 1fr}.dash-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="header-top">
-      <div class="brand"><span class="dot"></span> Finanzas <small>v1.4</small></div>
+      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5</small></div>
       <div class="total-balance">
         <div class="label">Balance líquido</div>
         <div class="amount" id="totalBalance">$0.00</div>
@@ -473,12 +493,18 @@
       <button class="tab" data-view="categories">🏷️ Categorías</button>
       <button class="tab" data-view="reports">📊 Informes</button>
     </div>
+    <div class="header-tools">
+      <button onclick="exportData()">⬇️ Respaldo</button>
+      <button onclick="document.getElementById('importFile').click()">⬆️ Restaurar</button>
+      <input id="importFile" type="file" accept="application/json,.json" hidden onchange="importData(event)">
+    </div>
   </header>
 
   <main>
     <!-- HOME -->
     <section class="view active" id="view-home">
       <div id="netWorthHome"></div>
+      <div id="dashboardHome"></div>
       <div class="section-title">Resumen de cuentas</div>
       <div id="homeAccounts" class="grid-accounts"></div>
       <div class="section-title" style="margin-top:6px">Últimos movimientos</div>
@@ -495,16 +521,25 @@
 
     <!-- MOVEMENTS -->
     <section class="view" id="view-movements">
-      <div class="section-title">
-        Movimientos
-        <select id="filterAccount" style="width:auto;padding:6px 30px 6px 10px;font-size:12px;border-radius:8px"></select>
+      <div class="section-title">Movimientos</div>
+      <div class="filter-panel">
+        <input id="txSearch" type="search" placeholder="Buscar descripción o categoría…" autocomplete="off">
+        <div class="filter-grid">
+          <select id="filterAccount"></select>
+          <select id="filterKind"><option value="all">Todos los tipos</option><option value="income">Ingresos</option><option value="expense">Egresos</option><option value="transfer">Transferencias</option></select>
+          <input id="filterFrom" type="date" aria-label="Desde">
+          <input id="filterTo" type="date" aria-label="Hasta">
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="clearTxFilters()">Limpiar filtros</button>
       </div>
+      <div id="movementsCount" class="subtle"></div>
       <div id="movementsList" class="grid-tx"></div>
     </section>
 
     <!-- RECURRING -->
     <section class="view" id="view-recurring">
       <div class="section-title">Pagos y cobros programados</div>
+      <div id="recurringSummary"></div>
       <div id="recurringList"></div>
       <button class="btn btn-primary" onclick="openRecurringSheet()">+ Nuevo recurrente</button>
     </section>
@@ -536,6 +571,10 @@
         <button onclick="openCategorySheet('expense')">+ Añadir</button>
       </div>
       <div id="expenseCatsList"></div>
+      <div class="section-title" style="margin-top:12px">Presupuestos por categoría <button onclick="openBudgetSheet()">+ Añadir</button></div>
+      <div id="budgetsList"></div>
+      <div class="section-title" style="margin-top:12px">Metas de ahorro <button onclick="openGoalSheet()">+ Añadir</button></div>
+      <div id="goalsList"></div>
     </section>
 
     <!-- REPORTS -->
@@ -589,6 +628,10 @@
       <div id="catBreakdownIncome"></div>
       <div class="section-title" style="margin-top:10px">📅 Cierre mensual</div>
       <div id="monthlyClose"></div>
+      <div class="section-title" style="margin-top:12px">Evolución mensual</div>
+      <div id="reportTrend"></div>
+      <div class="section-title" style="margin-top:12px">Comparación por categorías</div>
+      <div id="reportCompare"></div>
     </section>
   </main>
 
@@ -1002,10 +1045,11 @@ function addFreq(dateStr, freq){
   return d.toISOString().slice(0,10);
 }
 function nextDueDate(r){
-  let d = r.startDate;
+  let d = r.lastAppliedDate || r.startDate;
   const now = today();
+  if(r.lastAppliedDate) d = addFreq(d, r.frequency);
   let guard = 0;
-  while(d <= now && guard < 500){ d = addFreq(d, r.frequency); guard++; }
+  while(d < now && guard < 500){ d = addFreq(d, r.frequency); guard++; }
   return d;
 }
 
@@ -1165,7 +1209,7 @@ function openTransferSheet(presetFrom){
       <input type="date" id="trDate" value="${today()}">
     </div>
     <div id="trPreview"></div>
-    <button class="btn btn-primary" onclick="saveTransfer()">Confirmar transferencia</button>
+    <button class="btn btn-primary" onclick="saveTransferV15()">Confirmar transferencia</button>
   `);
   updateTransferPreview();
 }
@@ -1505,7 +1549,10 @@ function updateAsset(id){
   if(!name){ toast('Ponle un nombre'); return; }
   a.name = name;
   a.type = document.getElementById('editAssetType').value;
-  a.value = parseFloat(document.getElementById('editAssetValue').value) || 0;
+  const newValue = parseFloat(document.getElementById('editAssetValue').value) || 0;
+  a.valuations = Array.isArray(a.valuations)?a.valuations:[];
+  if(a.value !== newValue) a.valuations.push({date:today(),value:newValue});
+  a.value = newValue;
   a.depreciation = parseFloat(document.getElementById('editAssetDep').value) || 0;
   a.notes = document.getElementById('editAssetNotes').value.trim();
   save(); closeSheet(); renderAll(); toast('Activo actualizado');
@@ -1754,8 +1801,12 @@ function updateLiability(id){
   if(!name){ toast('Ponle un nombre'); return; }
   l.name = name;
   l.type = document.getElementById('editLiabType').value;
-  l.initialAmount = parseFloat(document.getElementById('editLiabInitial').value) || 0;
-  l.balance = parseFloat(document.getElementById('editLiabBalance').value) || 0;
+  const newInitial = parseFloat(document.getElementById('editLiabInitial').value) || 0;
+  const newBalance = parseFloat(document.getElementById('editLiabBalance').value) || 0;
+  l.initialAmount = newInitial;
+  l.history = Array.isArray(l.history)?l.history:[];
+  if(l.balance !== newBalance) l.history.push({date:today(),amount:newBalance-l.balance,action:'adjustment'});
+  l.balance = newBalance;
   l.notes = document.getElementById('editLiabNotes').value.trim();
   save(); closeSheet(); renderAll(); toast('Pasivo actualizado');
 }
@@ -2220,6 +2271,127 @@ if(state.accounts.length===0 && state.transactions.length===0){
   save();
 }
 renderAll();
+
+/* ============================================================
+   v1.5 EXTENSIONS
+   - Backup/restore JSON
+   - Edit/search/filter movements
+   - Budgets and savings goals
+   - Dashboard / available-to-spend
+   - Recurring status + due calculation
+   - Historical net-worth reconstruction
+   - Monthly trends and category comparisons
+   - Defensive migration while preserving v1.4 localStorage
+   ============================================================ */
+(function(){
+  const oldLoad = window.load;
+  function migrateV15(){
+    state.budgets = Array.isArray(state.budgets)?state.budgets:[];
+    state.goals = Array.isArray(state.goals)?state.goals:[];
+    state.settings = Object.assign({currency:'$', monthBudgetDefault:0},state.settings||{});
+    state.recurring = (state.recurring||[]).map(r=>Object.assign({active:true,endDate:'',lastAppliedDate:''},r));
+    state.liabilities = (state.liabilities||[]).map(l=>{l.history=Array.isArray(l.history)?l.history:[]; if(!l.initialAmount && typeof l.balance==='number') l.initialAmount=l.balance; return l;});
+    state.assets = (state.assets||[]).map(a=>{a.valuations=Array.isArray(a.valuations)?a.valuations:[]; if(!a.valuations.length && typeof a.value==='number') a.valuations=[{date:a.createdAt?new Date(a.createdAt).toISOString().slice(0,10):today(),value:a.value}]; return a;});
+    save();
+  }
+  window.migrateV15=migrateV15;
+
+  window.exportData=function(){
+    const payload={app:'Finanzas Personales',version:'1.5',exportedAt:new Date().toISOString(),state};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='finanzas-respaldo-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Respaldo descargado');
+  };
+  window.importData=function(ev){
+    const f=ev.target.files&&ev.target.files[0]; if(!f)return;
+    const reader=new FileReader();reader.onload=function(){try{
+      const data=JSON.parse(reader.result);const incoming=data.state||data;
+      if(!incoming||!Array.isArray(incoming.accounts)||!Array.isArray(incoming.transactions))throw new Error('Formato inválido');
+      if(!confirm('Restaurar este respaldo reemplazará los datos actuales. ¿Continuar?'))return;
+      state=Object.assign({},state,incoming);migrateV15();renderAllV15();toast('Respaldo restaurado');
+    }catch(e){alert('No se pudo restaurar el respaldo: '+e.message)}finally{ev.target.value='';}};reader.readAsText(f);
+  };
+
+  function monthKey(d){return d.slice(0,7)}
+  function monthRange(){const d=new Date();return {from:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),to:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
+  function monthTx(){const r=monthRange();return state.transactions.filter(t=>t.date>=r.from&&t.date<=r.to)}
+  function budgetSpent(b){return monthTx().filter(t=>t.kind==='expense'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
+  function recurringDue(){return (state.recurring||[]).filter(r=>r.active!==false).reduce((s,r)=>{const d=nextDueDate(r);return d<=monthRange().to?s+r.amount: s},0)}
+  function available(){return totalLiquid()-recurringDue()}
+  window.availableToSpend=available;
+
+  function editTx(id){
+    const t=state.transactions.find(x=>x.id===id);if(!t)return;
+    if(t.kind==='transfer'){editTransfer(id);return;}
+    txDraft={kind:t.kind,editingId:id};
+    const accOpts=state.accounts.map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${escapeHtml(a.name)}</option>`).join('');
+    const catOpts=buildCategoryOptions(t.kind,t.categoryId);
+    openSheet('Editar movimiento',`<div class="field"><label>Tipo</label><div class="seg" id="txKindSeg"><button data-kind="income" onclick="setTxKind('income')">Ingreso</button><button data-kind="expense" onclick="setTxKind('expense')">Egreso</button></div></div><div class="field"><label>Monto</label><input id="txAmount" type="number" inputmode="decimal" step="0.01" value="${t.amount}"></div><div class="field"><label>Categoría</label><select id="txCategory">${catOpts}</select></div><div class="field"><label>Descripción</label><input id="txDesc" maxlength="60" value="${escapeHtml(t.description||'')}"></div><div class="field"><label>Cuenta</label><select id="txAccount">${accOpts}</select></div><div class="field"><label>Fecha</label><input id="txDate" type="date" value="${t.date}"></div><button class="btn btn-primary" onclick="saveEditedTx()">Guardar cambios</button><button class="btn btn-danger" onclick="deleteTx('${id}');closeSheet()">Eliminar movimiento</button>`);
+    setTimeout(()=>setTxKind(t.kind),0);
+  }
+  window.editTx=editTx;
+  window.saveEditedTx=function(){const t=state.transactions.find(x=>x.id===txDraft.editingId);if(!t)return;const amount=parseFloat(document.getElementById('txAmount').value);if(!(amount>0)){toast('Monto inválido');return}t.amount=Math.abs(amount);t.kind=txDraft.kind;t.categoryId=document.getElementById('txCategory').value;t.description=document.getElementById('txDesc').value.trim();t.accountId=document.getElementById('txAccount').value;t.date=document.getElementById('txDate').value||today();save();closeSheet();renderAllV15();toast('Movimiento actualizado')};
+  window.editTransfer=function(id){const t=state.transactions.find(x=>x.id===id);if(!t)return;transferDraft={editingId:id,fromId:t.accountId,toId:t.toAccountId};openTransferSheet(t.accountId);transferDraft.editingId=id;setTimeout(()=>{const a=document.getElementById('trAmount');if(a)a.value=t.amount;const d=document.getElementById('trDesc');if(d)d.value=t.description||'';const dt=document.getElementById('trDate');if(dt)dt.value=t.date},20)};
+
+  window.clearTxFilters=function(){['txSearch','filterKind','filterFrom','filterTo'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=id==='filterKind'?'all':''});const a=document.getElementById('filterAccount');if(a)a.value='all';renderMovementsV15()};
+  window.renderMovementsV15=function(){
+    let txs=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+    const q=(document.getElementById('txSearch')?.value||'').toLowerCase().trim(), acc=document.getElementById('filterAccount')?.value||'all', kind=document.getElementById('filterKind')?.value||'all', from=document.getElementById('filterFrom')?.value||'', to=document.getElementById('filterTo')?.value||'';
+    if(acc!=='all')txs=txs.filter(t=>t.accountId===acc||t.toAccountId===acc);if(kind!=='all')txs=txs.filter(t=>t.kind===kind);if(from)txs=txs.filter(t=>t.date>=from);if(to)txs=txs.filter(t=>t.date<=to);if(q)txs=txs.filter(t=>{const c=t.categoryId?getCategory(t.categoryId):null;return `${t.description||''} ${c?.name||t.category||''}`.toLowerCase().includes(q)});
+    const el=document.getElementById('movementsList');document.getElementById('movementsCount').textContent=`${txs.length} movimiento${txs.length===1?'':'s'}`;el.innerHTML=txs.length?txs.map(txHTMLV15).join(''):`<div class="empty"><span class="big">🔎</span>No hay resultados.</div>`;
+  };
+  function txHTMLV15(t){
+    const base=txHTML(t);return base.replace(/<button class="tx-del" onclick="deleteTx\('([^']+)'\)" title="Eliminar">✕<\/button>/,`<div class="item-actions"><button class="icon-btn" onclick="event.stopPropagation();editTx('$1')" title="Editar">✏️</button><button class="tx-del" onclick="event.stopPropagation();deleteTx('$1')" title="Eliminar">✕</button></div>`);
+  }
+
+  window.openBudgetSheet=function(id){const b=id?state.budgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='expense');openSheet(b?'Editar presupuesto':'Nuevo presupuesto',`<div class="field"><label>Categoría</label><select id="budgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Límite mensual</label><input id="budgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveBudget('${id||''}')">Guardar</button>`)};
+  window.saveBudget=function(id){const cat=document.getElementById('budgetCat').value,amount=parseFloat(document.getElementById('budgetAmount').value);if(!(amount>0)){toast('Límite inválido');return}if(id){Object.assign(state.budgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.budgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto guardado')};
+  window.deleteBudget=function(id){if(confirm('¿Eliminar este presupuesto?')){state.budgets=state.budgets.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderBudgets=function(){const el=document.getElementById('budgetsList');if(!el)return;if(!state.budgets.length){el.innerHTML='<div class="subtle">No hay presupuestos. Define límites para controlar tus egresos.</div>';return}el.innerHTML=state.budgets.map(b=>{const c=getCategory(b.categoryId),spent=budgetSpent(b),pct=Math.min(100,spent/b.amount*100),over=spent>b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(spent)} de ${fmt(b.amount)} este mes</div></div><div class="item-actions"><button class="icon-btn" onclick="openBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteBudget('${b.id}')">✕</button></div></div><div class="progress"><i class="${over?'over':''}" style="width:${pct}%"></i></div></div>`}).join('')};
+
+  window.openGoalSheet=function(id){const g=id?state.goals.find(x=>x.id===id):null;openSheet(g?'Editar meta':'Nueva meta de ahorro',`<div class="field"><label>Nombre</label><input id="goalName" maxlength="40" value="${escapeHtml(g?.name||'')}" placeholder="Ej. Fondo de emergencia"></div><div class="field"><label>Objetivo</label><input id="goalTarget" type="number" inputmode="decimal" step="0.01" value="${g?.target||''}"></div><div class="field"><label>Ahorrado actualmente</label><input id="goalSaved" type="number" inputmode="decimal" step="0.01" value="${g?.saved||0}"></div><div class="field"><label>Fecha objetivo (opcional)</label><input id="goalDate" type="date" value="${g?.targetDate||''}"></div><button class="btn btn-primary" onclick="saveGoal('${id||''}')">Guardar</button>`)};
+  window.saveGoal=function(id){const name=document.getElementById('goalName').value.trim(),target=parseFloat(document.getElementById('goalTarget').value),saved=parseFloat(document.getElementById('goalSaved').value)||0;if(!name||!(target>0)){toast('Completa nombre y objetivo');return}const obj={name,target,saved:Math.max(0,saved),targetDate:document.getElementById('goalDate').value};if(id)Object.assign(state.goals.find(x=>x.id===id),obj);else state.goals.push(Object.assign({id:uid(),createdAt:Date.now()},obj));save();closeSheet();renderAllV15();toast('Meta guardada')};
+  window.deleteGoal=function(id){if(confirm('¿Eliminar esta meta?')){state.goals=state.goals.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderGoals=function(){const el=document.getElementById('goalsList');if(!el)return;if(!state.goals.length){el.innerHTML='<div class="subtle">No hay metas de ahorro.</div>';return}el.innerHTML=state.goals.map(g=>{const pct=Math.min(100,g.saved/g.target*100);return `<div class="goal-item"><div class="item-row"><div class="item-main"><div class="item-title">🎯 ${escapeHtml(g.name)}</div><div class="item-sub">${fmt(g.saved)} de ${fmt(g.target)}${g.targetDate?' · '+formatDate(g.targetDate):''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openGoalSheet('${g.id}')">✏️</button><button class="icon-btn" onclick="deleteGoal('${g.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join('')};
+
+  window.renderDashboard=function(){const el=document.getElementById('dashboardHome');if(!el)return;const tx=monthTx(),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0),net=inc-exp,avail=available(),due=recurringDue();el.innerHTML=`<div class="dash-grid"><div class="dash-card"><div class="dlabel">Disponible</div><div class="dvalue ${avail>=0?'pos':'neg'}">${fmtSigned(avail)}</div><div class="item-sub">Después de recurrentes vencidos</div></div><div class="dash-card"><div class="dlabel">Ahorro del mes</div><div class="dvalue ${net>=0?'pos':'neg'}">${fmtSigned(net)}</div><div class="item-sub">${fmt(inc)} ingresos · ${fmt(exp)} egresos</div></div><div class="dash-card"><div class="dlabel">Recurrentes</div><div class="dvalue">${fmt(due)}</div><div class="item-sub">Comprometidos este mes</div></div><div class="dash-card"><div class="dlabel">Presupuestos</div><div class="dvalue">${state.budgets.length}</div><div class="item-sub">${state.budgets.filter(b=>budgetSpent(b)>b.amount).length} excedidos</div></div></div>`};
+
+  window.renderRecurringV15=function(){const el=document.getElementById('recurringList');if(!el)return;const rs=state.recurring||[];const due=rs.filter(r=>r.active!==false&&nextDueDate(r)<=today()).length;document.getElementById('recurringSummary').innerHTML=rs.length?`<div class="subtle">${rs.length} programados · ${due} pendientes de registrar</div>`:'';if(!rs.length){el.innerHTML='<div class="empty"><span class="big">🔁</span>Sin pagos o cobros programados.</div>';return}el.innerHTML=rs.map(r=>{const d=nextDueDate(r),active=r.active!==false,over=active&&d<=today();return `<div class="tx" style="margin-bottom:10px;flex-wrap:wrap;opacity:${active?1:.62}"><div class="tx-icon" style="background:${r.kind==='income'?'rgba(46,204,113,.15)':'rgba(255,92,92,.15)'};color:${r.kind==='income'?'var(--green)':'var(--red)'}">${r.kind==='income'?'📥':'📤'}</div><div class="tx-body"><div class="tx-title">${escapeHtml(r.description)}</div><div class="tx-meta"><span>${freqLabel(r.frequency)}</span><span class="badge ${over?'due':''}">${active?'Próx: '+formatDate(d):'Pausado'}</span></div></div><div class="tx-amt ${r.kind==='income'?'pos':'neg'}">${r.kind==='income'?'+':'-'}${fmt(r.amount)}</div><div class="item-actions"><button class="icon-btn" onclick="toggleRecurringV15('${r.id}')">${active?'⏸️':'▶️'}</button><button class="icon-btn" onclick="applyRecurringV15('${r.id}')">✓</button></div></div>`}).join('')};
+  window.toggleRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r)return;r.active=r.active===false;save();renderAllV15();toast(r.active?'Recurrente activado':'Recurrente pausado')};
+  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}applyRecurring(id);};
+
+  function historicalLiability(l,date){let bal=l.initialAmount||0;const hist=(l.history||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));for(const h of hist){if(h.date>date)break;if(h.action==='created'){bal=h.amount}else if(h.action==='increase'){bal+=h.amount}else if(h.action==='payment'||h.action==='settled'){bal-=h.amount}else if(h.action==='adjustment'){bal+=h.amount}}return Math.max(0,bal)}
+  function historicalAsset(a,date){if(a.createdAt&&new Date(a.createdAt).toISOString().slice(0,10)>date)return 0;let val=assetCurrentValue(a);const vs=(a.valuations||[]).filter(v=>v.date<=date).sort((x,y)=>x.date.localeCompare(y.date));if(vs.length)val=vs[vs.length-1].value;if(a.status==='sold'&&a.soldDate&&a.soldDate<=date)return 0;return val}
+  window.calcNetWorthAtV15=function(date){let liq=0;state.accounts.forEach(acc=>{liq+=acc.initial||0;state.transactions.forEach(t=>{if(t.date>date)return;if(t.kind==='transfer'){if(t.accountId===acc.id)liq-=t.amount;if(t.toAccountId===acc.id)liq+=t.amount}else if(t.accountId===acc.id)liq+=(t.kind==='income'?t.amount:t.kind==='expense'?-t.amount:0)})});const act=state.assets.reduce((s,a)=>s+historicalAsset(a,date),0),pas=state.liabilities.reduce((s,l)=>s+historicalLiability(l,date),0);return liq+act-pas};
+
+  function monthlyData(n=6){const out=[];const d=new Date();d.setDate(1);for(let i=n-1;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1),y=new Date(d.getFullYear(),d.getMonth()-i+1,0),from=x.toISOString().slice(0,10),to=y.toISOString().slice(0,10),tx=state.transactions.filter(t=>t.date>=from&&t.date<=to),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0);out.push({label:x.toLocaleDateString('es-MX',{month:'short'}),inc,exp,nw:calcNetWorthAtV15(to)});}return out}
+  window.renderReportsV15=function(){const d=monthlyData(6),el=document.getElementById('reportTrend');if(el){const max=Math.max(1,...d.flatMap(x=>[x.inc,x.exp]));el.innerHTML='<div class="trend-wrap">'+d.map(x=>`<div class="trend-row"><span>${x.label}</span><div class="trend-bars"><i class="trend-bar" style="height:${Math.max(3,x.inc/max*100)}%" title="Ingreso"></i><i class="trend-bar exp" style="height:${Math.max(3,x.exp/max*100)}%" title="Egreso"></i></div><strong>${fmtSigned(x.inc-x.exp)}</strong></div>`).join('')+'</div>'}
+    const cmp={};d.forEach(()=>{});const cur=monthTx();cur.filter(t=>t.kind==='expense').forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';cmp[k]=(cmp[k]||0)+t.amount});const prevStart=new Date();prevStart.setDate(1);prevStart.setMonth(prevStart.getMonth()-1);const prevFrom=prevStart.toISOString().slice(0,10),prevTo=new Date(prevStart.getFullYear(),prevStart.getMonth()+1,0).toISOString().slice(0,10);state.transactions.filter(t=>t.kind==='expense'&&t.date>=prevFrom&&t.date<=prevTo).forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';if(!cmp[k])cmp[k]=0;cmp[k]-=t.amount});const ce=document.getElementById('reportCompare');if(ce){const rows=Object.entries(cmp).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,12);ce.innerHTML=rows.length?`<div class="compare-row"><strong>Categoría</strong><strong>Mes</strong><strong>Δ vs ant.</strong></div>`+rows.map(([k,delta])=>{const curv=budgetSpent({categoryId:(state.categories.find(c=>c.name===k)?.id||'' )});const prevv=Math.max(0,curv-delta);return `<div class="compare-row"><span>${escapeHtml(k)}</span><span>${fmt(curv)}</span><span class="${delta<=0?'delta-pos':'delta-neg'}">${delta<=0?'▼':'▲'} ${fmt(Math.abs(delta))}</span></div>`}).join(''):'<div class="subtle">Aún no hay egresos para comparar.</div>'}}
+
+  window.editTransfer=window.editTransfer||function(){};
+  window.saveTransferV15=function(){
+    const fromId=document.getElementById('trFrom').value,toId=document.getElementById('trTo').value,amount=parseFloat(document.getElementById('trAmount').value),desc=document.getElementById('trDesc').value.trim(),date=document.getElementById('trDate').value||today();
+    if(!fromId||!toId||fromId===toId||!(amount>0)){toast('Revisa cuentas y monto');return}
+    const editing=transferDraft.editingId?state.transactions.find(t=>t.id===transferDraft.editingId):null;
+    let available=accountBalance(fromId);if(editing&&editing.accountId===fromId)available+=editing.amount;if(amount>available){toast('Saldo insuficiente');return}
+    const fromAcc=state.accounts.find(a=>a.id===fromId),toAcc=state.accounts.find(a=>a.id===toId);
+    if(editing){Object.assign(editing,{amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date});toast('Transferencia actualizada')}else{state.transactions.push({id:uid(),kind:'transfer',amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date,createdAt:Date.now()});toast('Transferencia registrada')}
+    save();closeSheet();renderAllV15();
+  };
+  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}state.transactions.push({id:uid(),kind:r.kind,amount:r.amount,description:r.description,categoryId:r.categoryId||'',accountId:r.accountId,date:d,createdAt:Date.now(),recurringId:r.id});r.lastAppliedDate=d;save();closeSheet();renderAllV15();toast('Movimiento registrado')};
+
+  window.renderAllV15=function(){
+    migrateV15();
+    renderHeader();renderHome();renderAccounts();renderPatrimony();renderCategories();renderReports();renderFilterAccount();renderReportAccountFilter();
+    renderMovementsV15();renderRecurringV15();renderBudgets();renderGoals();renderDashboard();renderReportsV15();
+  };
+  // Replace action rendering without changing the original storage model.
+  const originalRenderAll=window.renderAll; window.renderAll=renderAllV15;
+  // Refresh account filter and bind live movement filters.
+  function bindFilters(){['txSearch','filterKind','filterFrom','filterTo','filterAccount'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.dataset.v15){e.dataset.v15='1';e.addEventListener('input',renderMovementsV15);e.addEventListener('change',renderMovementsV15)}})}
+  const oldRenderFilterAccount=window.renderFilterAccount;window.renderFilterAccount=function(){oldRenderFilterAccount();bindFilters()};
+  // Initial pass after all overrides exist.
+  migrateV15();renderAllV15();bindFilters();
+})();
 </script>
 </body>
 </html>
