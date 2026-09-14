@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0d0d">
-<title>Finanzas Personales v1.5.3 Online</title>
+<title>Finanzas Personales v1.5.2</title>
 <style>
   :root{
     --bg:#0d0d0d;
@@ -460,119 +460,16 @@
 .compare-row{display:grid;grid-template-columns:minmax(80px,1fr) 70px 70px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:11.5px}.compare-row:last-child{border-bottom:0}.delta-pos{color:var(--green)}.delta-neg{color:var(--red)}
 @media(max-width:380px){main{padding:12px}.tab{padding:8px 11px}.tx{gap:8px;padding:10px}.tx-amt{font-size:13px}.filter-grid{grid-template-columns:1fr}.header-tools{justify-content:stretch}.header-tools button{flex:1}}
 @media(min-width:900px){.header-tools{position:absolute;right:26px;bottom:8px}.header-tools button{font-size:12px}.filter-grid{grid-template-columns:2fr 1fr 1fr 1fr}.dash-grid{grid-template-columns:repeat(4,1fr)}}
-
-/* ===================== v1.5.3 Auth Layer ===================== */
-.auth-screen{
-  position:fixed;inset:0;z-index:300;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:24px;text-align:center;
-  gap:18px;
-}
-.auth-screen.hidden{display:none}
-.auth-logo{font-size:56px;margin-bottom:4px}
-.auth-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
-.auth-sub{font-size:13.5px;color:var(--text-dim);max-width:320px;line-height:1.5}
-.auth-btn{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  width:100%;max-width:320px;
-  padding:14px 20px;border-radius:var(--radius-sm);
-  background:#fff;color:#1a1a1c;
-  border:none;font-size:15px;font-weight:700;font-family:inherit;
-  cursor:pointer;transition:.15s;
-}
-.auth-btn:active{transform:scale(.97);background:#e8e8ea}
-.auth-btn svg{flex:0 0 auto}
-.auth-note{font-size:11px;color:var(--text-mute);max-width:300px}
-
-/* User badge in header */
-.user-badge{
-  display:flex;align-items:center;gap:6px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:999px;padding:5px 10px 5px 6px;
-  cursor:pointer;transition:.15s;
-}
-.user-badge:active{background:var(--surface-3)}
-.user-badge img{
-  width:22px;height:22px;border-radius:50%;
-  object-fit:cover;
-}
-.user-badge .uname{
-  font-size:11px;font-weight:600;color:var(--text-dim);
-  max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.sync-dot{
-  width:7px;height:7px;border-radius:50%;flex:0 0 auto;
-}
-.sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
-.sync-dot.offline{background:var(--orange)}
-.sync-dot.syncing{background:var(--accent);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* Loading overlay */
-.loading-overlay{
-  position:fixed;inset:0;z-index:400;
-  background:rgba(13,13,13,.75);
-  backdrop-filter:blur(4px);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:14px;
-}
-.loading-overlay.hidden{display:none}
-.spinner{
-  width:38px;height:38px;border-radius:50%;
-  border:3px solid var(--surface-3);
-  border-top-color:var(--accent);
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:13px;color:var(--text-dim);font-weight:600}
 </style>
 </head>
 <body>
-
-<!-- Auth Screen -->
-<div class="auth-screen" id="authScreen">
-  <div class="auth-logo">💰</div>
-  <div class="auth-title">Finanzas Personales</div>
-  <div class="auth-sub">
-    Inicia sesión con tu cuenta de Google para guardar tus datos en la nube y sincronizarlos entre dispositivos.
-  </div>
-  <button class="auth-btn" onclick="signInWithGoogle()" id="googleSignInBtn">
-    <svg width="20" height="20" viewBox="0 0 48 48">
-      <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
-      <path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
-      <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
-      <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
-    </svg>
-    Continuar con Google
-  </button>
-  <div class="auth-note">
-    Al iniciar sesión aceptas que tus datos se guarden de forma segura en Firebase Firestore.
-  </div>
-</div>
-
-<!-- Loading Overlay -->
-<div class="loading-overlay hidden" id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Sincronizando...</div>
-</div>
-
-<div class="app" id="app" style="display:none">
+<div class="app">
   <header>
     <div class="header-top">
-      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5.3</small></div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="user-badge" onclick="showUserMenu()" id="userBadge" style="display:none">
-          <span class="sync-dot online" id="syncDot"></span>
-          <img id="userAvatar" src="" alt="" onerror="this.style.display='none'">
-          <span class="uname" id="userName"></span>
-        </div>
-        <div class="total-balance">
-          <div class="label">Balance líquido</div>
-          <div class="amount" id="totalBalance">$0.00</div>
-        </div>
+      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5.2</small></div>
+      <div class="total-balance">
+        <div class="label">Balance líquido</div>
+        <div class="amount" id="totalBalance">$0.00</div>
       </div>
     </div>
     <div class="summary-row">
@@ -613,7 +510,7 @@
       <div id="homeTx" class="grid-tx"></div>
     </section>
 
-    <!-- PLANNING / BUDGETS -->
+    <!-- PLANNING / BUDGETS (ahora justo después de Inicio) -->
     <section class="view" id="view-planning">
       <div class="section-title">Presupuestos de egresos <button onclick="openBudgetSheet()">+ Añadir</button></div>
       <div class="subtle" style="margin-bottom:10px">
@@ -773,59 +670,16 @@
 
 <div class="toast" id="toast"></div>
 
-<script type="module">
+<script>
 /* ============================================================
-   FINANZAS PERSONALES v1.5.3 Online
-   Firebase Auth (Google) + Cloud Firestore Sync
+   FINANZAS PERSONALES v1.5.2
+   Cambios v1.5.2:
+   - Pestaña Presupuesto movida junto a Inicio
+   - Presupuestos de ingresos por categoría
+   - Resumen de compatibilidad ingresos vs egresos
    ============================================================ */
 
-// ============================================================
-// 1. CONFIGURACIÓN DE FIREBASE (REEMPLAZA CON TUS DATOS)
-// ============================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-  onAuthStateChanged,
-  signOut,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
-// ⚠️ REEMPLAZA ESTE OBJETO CON TUS CREDENCIALES DE FIREBASE
-const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROJECT_ID.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROJECT_ID.appspot.com",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
-};
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Configurar persistencia local (mantiene sesión entre recargas)
-setPersistence(auth, browserLocalPersistence).catch(() => {});
-
-// ============================================================
-// 2. ESTADO GLOBAL
-// ============================================================
 const STORAGE_KEY = 'finanzas_app_v1';
-const STATE_DOC_PATH = 'financeState'; // Documento donde se guarda todo el estado
 
 let state = {
   accounts: [],
@@ -843,31 +697,12 @@ let state = {
 let currentPeriod = 'month';
 let currentReportAccount = 'all';
 
-// Control de sincronización
-let currentUser = null;
-let unsubscribeSnapshot = null;
-let isSyncing = false;
-let syncTimeout = null;
-let lastSyncedAt = 0;
-
-// ============================================================
-// 3. PERSISTENCIA LOCAL (fallback offline)
-// ============================================================
-function saveLocal(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }catch(e){ console.warn('Error guardando localmente', e); }
-}
-
-function loadLocal(){
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function load(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw){ state = Object.assign(state, JSON.parse(raw)); }
-  }catch(e){ console.warn('Error cargando datos locales', e); }
-  ensureStateShape();
-}
-
-function ensureStateShape(){
+  }catch(e){ console.warn('Error cargando datos', e); }
   if(!state.accounts) state.accounts = [];
   if(!state.transactions) state.transactions = [];
   if(!state.recurring) state.recurring = [];
@@ -880,171 +715,6 @@ function ensureStateShape(){
   if(!state.settings) state.settings = { currency: '$' };
 }
 
-// ============================================================
-// 4. SINCRONIZACIÓN CON FIRESTORE
-// ============================================================
-function userDocRef(uid){
-  return doc(db, 'users', uid, 'data', STATE_DOC_PATH);
-}
-
-async function loadFromFirestore(uid){
-  try{
-    const ref = userDocRef(uid);
-    const snap = await getDoc(ref);
-    if(snap.exists()){
-      const data = snap.data();
-      if(data && data.state){
-        state = Object.assign({}, state, data.state);
-        ensureStateShape();
-        saveLocal();
-        return true;
-      }
-    }
-    return false;
-  }catch(e){
-    console.error('Error cargando desde Firestore:', e);
-    return false;
-  }
-}
-
-async function saveToFirestore(uid, opts = {}){
-  if(!uid) return;
-  if(isSyncing && !opts.force) return;
-
-  isSyncing = true;
-  updateSyncIndicator('syncing');
-
-  try{
-    const ref = userDocRef(uid);
-    await setDoc(ref, {
-      state: state,
-      updatedAt: serverTimestamp(),
-      version: '1.5.3',
-      email: currentUser?.email || '',
-      displayName: currentUser?.displayName || ''
-    }, { merge: false });
-    lastSyncedAt = Date.now();
-    updateSyncIndicator('online');
-  }catch(e){
-    console.error('Error guardando en Firestore:', e);
-    updateSyncIndicator('offline');
-  }finally{
-    isSyncing = false;
-  }
-}
-
-function scheduleSync(uid){
-  if(syncTimeout) clearTimeout(syncTimeout);
-  syncTimeout = setTimeout(() => {
-    saveToFirestore(uid);
-  }, 800); // Debounce: agrupa cambios rápidos
-}
-
-// Guardar: local + remoto
-function save(){
-  saveLocal();
-  if(currentUser?.uid){
-    scheduleSync(currentUser.uid);
-  }
-}
-
-// ============================================================
-// 5. INDICADOR DE SINCRONIZACIÓN
-// ============================================================
-function updateSyncIndicator(status){
-  const dot = document.getElementById('syncDot');
-  if(!dot) return;
-  dot.className = 'sync-dot ' + status;
-  dot.title = status === 'online' ? 'Sincronizado' :
-               status === 'syncing' ? 'Sincronizando...' :
-               'Sin conexión (se guardará localmente)';
-}
-
-// ============================================================
-// 6. AUTENTICACIÓN
-// ============================================================
-const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ prompt: 'select_account' });
-
-window.signInWithGoogle = async function(){
-  const btn = document.getElementById('googleSignInBtn');
-  if(btn){ btn.disabled = true; btn.textContent = 'Conectando...'; }
-  try{
-    // Intentar popup primero (mejor UX en desktop)
-    try{
-      await signInWithPopup(auth, googleProvider);
-    }catch(popupErr){
-      // Fallback a redirect si popup es bloqueado
-      if(popupErr.code === 'auth/popup-blocked' ||
-         popupErr.code === 'auth/popup-closed-by-user' ||
-         popupErr.code === 'auth/cancelled-popup-request'){
-        await signInWithRedirect(auth, googleProvider);
-      } else {
-        throw popupErr;
-      }
-    }
-  }catch(err){
-    console.error('Error de autenticación:', err);
-    toast('No se pudo iniciar sesión: ' + (err.message || err.code));
-    if(btn){ btn.disabled = false; btn.innerHTML = 'Continuar con Google'; }
-  }
-};
-
-window.signOutUser = async function(){
-  if(!confirm('¿Cerrar sesión? Tus datos permanecerán en la nube.')) return;
-  try{
-    if(unsubscribeSnapshot){ unsubscribeSnapshot(); unsubscribeSnapshot = null; }
-    await signOut(auth);
-    // Limpiar UI
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('authScreen').classList.remove('hidden');
-    document.getElementById('userBadge').style.display = 'none';
-    state = { accounts:[], transactions:[], recurring:[], categories:[], assets:[], liabilities:[], budgets:[], incomeBudgets:[], goals:[], settings:{ currency:'$' } };
-  }catch(e){
-    console.error('Error al cerrar sesión:', e);
-  }
-};
-
-window.showUserMenu = function(){
-  if(!currentUser) return;
-  const email = currentUser.email || '';
-  openSheet('👤 Mi cuenta', `
-    <div class="card" style="margin-bottom:14px;text-align:center">
-      <img src="${currentUser.photoURL || ''}" alt="" style="width:56px;height:56px;border-radius:50%;margin-bottom:8px" onerror="this.style.display='none'">
-      <div style="font-weight:700;font-size:15px">${escapeHtml(currentUser.displayName || 'Usuario')}</div>
-      <div style="font-size:12px;color:var(--text-mute);margin-top:2px">${escapeHtml(email)}</div>
-    </div>
-    <div class="card" style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
-        <span style="color:var(--text-mute)">Estado de sincronización</span>
-        <span style="font-weight:600" id="syncStatusText">Sincronizado</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px">
-        <span style="color:var(--text-mute)">Última sincronización</span>
-        <span style="font-weight:600" id="lastSyncText">—</span>
-      </div>
-    </div>
-    <button class="btn btn-primary" onclick="syncNow()">🔄 Sincronizar ahora</button>
-    <button class="btn btn-danger" onclick="signOutUser()">Cerrar sesión</button>
-  `);
-  setTimeout(() => {
-    const st = document.getElementById('syncStatusText');
-    const lt = document.getElementById('lastSyncText');
-    if(st) st.textContent = isSyncing ? 'Sincronizando...' : 'Sincronizado';
-    if(lt) lt.textContent = lastSyncedAt ? new Date(lastSyncedAt).toLocaleString('es-MX') : '—';
-  }, 50);
-};
-
-window.syncNow = async function(){
-  if(!currentUser?.uid) return;
-  await saveToFirestore(currentUser.uid, { force: true });
-  toast('Sincronizado con la nube');
-  closeSheet();
-};
-
-// ============================================================
-// 7. UTILIDADES
-// ============================================================
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const fmt = n => (state.settings.currency||'$') + Math.abs(n).toLocaleString('es-MX',{minimumFractionDigits:2, maximumFractionDigits:2});
 const fmtSigned = n => (n<0?'-':'') + fmt(n);
@@ -1131,14 +801,10 @@ function renderAll(){
 function renderHeader(){
   const tb = totalLiquid();
   const el = document.getElementById('totalBalance');
-  if(el){
-    el.textContent = fmtSigned(tb);
-    el.className = 'amount ' + (tb>=0?'pos':'neg');
-  }
-  const si = document.getElementById('sumIncome');
-  const se = document.getElementById('sumExpense');
-  if(si) si.textContent = fmt(totalIncome());
-  if(se) se.textContent = fmt(totalExpense());
+  el.textContent = fmtSigned(tb);
+  el.className = 'amount ' + (tb>=0?'pos':'neg');
+  document.getElementById('sumIncome').textContent = fmt(totalIncome());
+  document.getElementById('sumExpense').textContent = fmt(totalExpense());
 }
 
 function netWorthCardHTML(){
@@ -1160,19 +826,15 @@ function netWorthCardHTML(){
 }
 
 function renderHome(){
-  const nh = document.getElementById('netWorthHome');
-  if(nh) nh.innerHTML = netWorthCardHTML();
+  document.getElementById('netWorthHome').innerHTML = netWorthCardHTML();
   const c = document.getElementById('homeAccounts');
-  if(c){
-    if(state.accounts.length===0){
-      c.innerHTML = `<div class="empty"><span class="big">💳</span>No hay cuentas aún.</div>`;
-    } else {
-      c.innerHTML = state.accounts.map(accountCardHTML).join('');
-    }
+  if(state.accounts.length===0){
+    c.innerHTML = `<div class="empty"><span class="big">💳</span>No hay cuentas aún.</div>`;
+  } else {
+    c.innerHTML = state.accounts.map(accountCardHTML).join('');
   }
-  const txs = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
-  const ht = document.getElementById('homeTx');
-  if(ht) ht.innerHTML = txs.length ? txs.map(txHTML).join('')
+  const txs = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt-a.createdAt).slice(0,6);
+  document.getElementById('homeTx').innerHTML = txs.length ? txs.map(txHTML).join('')
     : `<div class="empty"><span class="big">📋</span>Sin movimientos registrados.</div>`;
 }
 
@@ -1198,7 +860,6 @@ function accountCardHTML(acc){
 
 function renderAccounts(){
   const c = document.getElementById('accountsList');
-  if(!c) return;
   if(state.accounts.length===0){
     c.innerHTML = `<div class="empty"><span class="big">💳</span>Aún no tienes cuentas.</div>`;
   } else {
@@ -1207,23 +868,18 @@ function renderAccounts(){
 }
 
 function renderPatrimony(){
-  const nwp = document.getElementById('netWorthPatrimony');
-  if(nwp) nwp.innerHTML = netWorthCardHTML();
+  document.getElementById('netWorthPatrimony').innerHTML = netWorthCardHTML();
   const aEl = document.getElementById('assetsList');
-  if(aEl){
-    if(state.assets.length===0){
-      aEl.innerHTML = `<div class="empty"><span class="big">🏠</span>Sin activos registrados.<br>Añade tus bienes y propiedades.</div>`;
-    } else {
-      aEl.innerHTML = state.assets.map(assetCardHTML).join('');
-    }
+  if(state.assets.length===0){
+    aEl.innerHTML = `<div class="empty"><span class="big">🏠</span>Sin activos registrados.<br>Añade tus bienes y propiedades.</div>`;
+  } else {
+    aEl.innerHTML = state.assets.map(assetCardHTML).join('');
   }
   const lEl = document.getElementById('liabilitiesList');
-  if(lEl){
-    if(state.liabilities.length===0){
-      lEl.innerHTML = `<div class="empty"><span class="big">📉</span>Sin pasivos registrados.<br>Añade tus deudas y créditos.</div>`;
-    } else {
-      lEl.innerHTML = state.liabilities.map(liabilityCardHTML).join('');
-    }
+  if(state.liabilities.length===0){
+    lEl.innerHTML = `<div class="empty"><span class="big">📉</span>Sin pasivos registrados.<br>Añade tus deudas y créditos.</div>`;
+  } else {
+    lEl.innerHTML = state.liabilities.map(liabilityCardHTML).join('');
   }
 }
 
@@ -1317,10 +973,10 @@ function txHTML(t){
 
 function renderMovements(){
   const filter = document.getElementById('filterAccount')?.value || 'all';
-  let txs = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+  let txs = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt-a.createdAt);
   if(filter!=='all') txs = txs.filter(t=>t.accountId===filter || t.toAccountId===filter);
   const el = document.getElementById('movementsList');
-  if(el) el.innerHTML = txs.length ? txs.map(txHTML).join('')
+  el.innerHTML = txs.length ? txs.map(txHTML).join('')
     : `<div class="empty"><span class="big">📋</span>No hay movimientos que mostrar.</div>`;
 }
 
@@ -1345,7 +1001,6 @@ function renderReportAccountFilter(){
 
 function renderRecurring(){
   const el = document.getElementById('recurringList');
-  if(!el) return;
   if(state.recurring.length===0){
     el.innerHTML = `<div class="empty"><span class="big">🔁</span>Sin pagos o cobros programados.</div>`;
     return;
@@ -1382,11 +1037,9 @@ function renderRecurring(){
 function renderCategories(){
   const inc = categoriesByKind('income');
   const exp = categoriesByKind('expense');
-  const icl = document.getElementById('incomeCatsList');
-  const ecl = document.getElementById('expenseCatsList');
-  if(icl) icl.innerHTML = inc.length ? inc.map(catItemHTML).join('')
+  document.getElementById('incomeCatsList').innerHTML = inc.length ? inc.map(catItemHTML).join('')
     : `<div class="empty" style="padding:20px"><span class="big">🏷️</span>Sin categorías de ingreso</div>`;
-  if(ecl) ecl.innerHTML = exp.length ? exp.map(catItemHTML).join('')
+  document.getElementById('expenseCatsList').innerHTML = exp.length ? exp.map(catItemHTML).join('')
     : `<div class="empty" style="padding:20px"><span class="big">🏷️</span>Sin categorías de egreso</div>`;
 }
 function catItemHTML(c){
@@ -1431,19 +1084,19 @@ function nextDueDate(r){
 /* ============================================================
    SHEETS
    ============================================================ */
-window.openSheet = function(title, html){
+function openSheet(title, html){
   document.getElementById('sheetTitle').textContent = title;
   document.getElementById('sheetBody').innerHTML = html;
   document.getElementById('overlay').classList.add('show');
-};
-window.closeSheet = function(){
+}
+function closeSheet(){
   document.getElementById('overlay').classList.remove('show');
-};
+}
 
 /* ============================================================
-   QUICK SHEET
+   QUICK SHEET (FAB)
    ============================================================ */
-window.openQuickSheet = function(){
+function openQuickSheet(){
   if(state.accounts.length===0){
     toast('Primero crea una cuenta');
     return openAccountSheet();
@@ -1457,13 +1110,13 @@ window.openQuickSheet = function(){
     </button>
     <button class="btn btn-ghost" onclick="closeSheet()">Cancelar</button>
   `);
-};
+}
 
 /* ============================================================
-   MOVIMIENTO
+   MOVIMIENTO (ingreso / egreso)
    ============================================================ */
 let txDraft = { kind:'expense' };
-window.openTxSheet = function(){
+function openTxSheet(){
   if(state.accounts.length===0){
     toast('Primero crea una cuenta');
     return openAccountSheet();
@@ -1502,7 +1155,7 @@ window.openTxSheet = function(){
     <button class="btn btn-primary" onclick="saveTx()">Guardar movimiento</button>
   `);
   setTimeout(()=>document.getElementById('txAmount')?.focus(), 250);
-};
+}
 function buildCategoryOptions(kind){
   const cats = categoriesByKind(kind);
   let opts = `<option value="">— Sin categoría —</option>`;
@@ -1511,15 +1164,15 @@ function buildCategoryOptions(kind){
   }
   return opts;
 }
-window.setTxKind = function(kind){
+function setTxKind(kind){
   txDraft.kind = kind;
   document.querySelectorAll('#txKindSeg button').forEach(b=>{
     b.classList.toggle('active', b.dataset.kind===kind);
   });
   const catSel = document.getElementById('txCategory');
   if(catSel) catSel.innerHTML = buildCategoryOptions(kind);
-};
-window.saveTx = function(){
+}
+function saveTx(){
   const amount = parseFloat(document.getElementById('txAmount').value);
   const desc = document.getElementById('txDesc').value.trim();
   const categoryId = document.getElementById('txCategory').value;
@@ -1533,19 +1186,19 @@ window.saveTx = function(){
   });
   save(); closeSheet(); renderAll();
   toast(txDraft.kind==='income'?'Ingreso registrado':'Egreso registrado');
-};
-window.deleteTx = function(id){
+}
+function deleteTx(id){
   if(!confirm('¿Eliminar este movimiento?')) return;
   state.transactions = state.transactions.filter(t=>t.id!==id);
   save(); renderAll(); toast('Movimiento eliminado');
-};
+}
 
 /* ============================================================
-   TRANSFERENCIA
+   TRANSFERENCIA ENTRE CUENTAS
    ============================================================ */
 let transferDraft = {};
 
-window.openTransferSheet = function(presetFrom){
+function openTransferSheet(presetFrom){
   if(state.accounts.length < 2){
     toast('Necesitas al menos 2 cuentas para transferir');
     if(state.accounts.length === 1) return openAccountSheet();
@@ -1587,9 +1240,9 @@ window.openTransferSheet = function(presetFrom){
     <button class="btn btn-primary" onclick="saveTransferV15()">Confirmar transferencia</button>
   `);
   updateTransferPreview();
-};
+}
 
-window.onTransferFromChange = function(){
+function onTransferFromChange(){
   const fromId = document.getElementById('trFrom').value;
   transferDraft.fromId = fromId;
   const toSel = document.getElementById('trTo');
@@ -1600,13 +1253,13 @@ window.onTransferFromChange = function(){
   if(toSel.value === fromId) toSel.selectedIndex = 0;
   transferDraft.toId = toSel.value;
   updateTransferPreview();
-};
-window.onTransferToChange = function(){
+}
+function onTransferToChange(){
   transferDraft.toId = document.getElementById('trTo').value;
   updateTransferPreview();
-};
+}
 
-window.updateTransferPreview = function(){
+function updateTransferPreview(){
   const fromId = document.getElementById('trFrom')?.value;
   const toId = document.getElementById('trTo')?.value;
   const amount = parseFloat(document.getElementById('trAmount')?.value) || 0;
@@ -1620,43 +1273,41 @@ window.updateTransferPreview = function(){
   const errEl = document.getElementById('trErr');
   const previewEl = document.getElementById('trPreview');
 
-  if(availEl) availEl.textContent = fmt(fromBal);
-  if(errEl){
-    if(amount > fromBal){
-      errEl.textContent = 'Saldo insuficiente';
-      if(availEl) availEl.style.color = 'var(--red)';
-    } else {
-      errEl.textContent = '';
-      if(availEl) availEl.style.color = '';
-    }
+  availEl.textContent = fmt(fromBal);
+  if(amount > fromBal){
+    errEl.textContent = 'Saldo insuficiente';
+    availEl.parentElement.querySelector('strong').style.color = 'var(--red)';
+  } else {
+    errEl.textContent = '';
+    availEl.parentElement.querySelector('strong').style.color = '';
   }
 
-  if(previewEl){
-    previewEl.innerHTML = `
-      <div class="transfer-preview">
-        <div class="tp-side">
-          <span class="tp-label">Sale de</span>
-          <span class="tp-acc" style="color:${from.color}">${from.icon} ${escapeHtml(from.name)}</span>
-          <span class="tp-bal">${fmt(fromBal)} → <strong style="color:var(--red)">${fmt(Math.max(0,fromBal-amount))}</strong></span>
-        </div>
-        <div class="tp-arrow">→</div>
-        <div class="tp-side right">
-          <span class="tp-label">Entra a</span>
-          <span class="tp-acc" style="color:${to.color}">${escapeHtml(to.name)} ${to.icon}</span>
-          <span class="tp-bal">${fmt(toBal)} → <strong style="color:var(--green)">${fmt(toBal+amount)}</strong></span>
-        </div>
+  previewEl.innerHTML = `
+    <div class="transfer-preview">
+      <div class="tp-side">
+        <span class="tp-label">Sale de</span>
+        <span class="tp-acc" style="color:${from.color}">${from.icon} ${escapeHtml(from.name)}</span>
+        <span class="tp-bal">${fmt(fromBal)} → <strong style="color:var(--red)">${fmt(Math.max(0,fromBal-amount))}</strong></span>
       </div>
-    `;
-  }
-};
+      <div class="tp-arrow">→</div>
+      <div class="tp-side right">
+        <span class="tp-label">Entra a</span>
+        <span class="tp-acc" style="color:${to.color}">${escapeHtml(to.name)} ${to.icon}</span>
+        <span class="tp-bal">${fmt(toBal)} → <strong style="color:var(--green)">${fmt(toBal+amount)}</strong></span>
+      </div>
+    </div>
+  `;
+}
 
-window.saveTransfer = function(){ window.saveTransferV15(); };
+function saveTransfer(){
+  saveTransferV15();
+}
 
 /* ============================================================
    CUENTA
    ============================================================ */
 let accDraft = { icon:'🏦', color:'#4c8dff' };
-window.openAccountSheet = function(){
+function openAccountSheet(){
   accDraft = { icon:'🏦', color:'#4c8dff' };
   const typeOpts = Object.entries(ACCOUNT_TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
   openSheet('Nueva cuenta', `
@@ -1686,16 +1337,16 @@ window.openAccountSheet = function(){
     </div>
     <button class="btn btn-primary" onclick="saveAccount()">Crear cuenta</button>
   `);
-};
-window.pickIcon = function(icon){
+}
+function pickIcon(icon){
   accDraft.icon = icon;
   document.querySelectorAll('#iconPick button').forEach(b=>b.classList.toggle('sel', b.dataset.icon===icon));
-};
-window.pickColor = function(color){
+}
+function pickColor(color){
   accDraft.color = color;
   document.querySelectorAll('#colorPick button').forEach(b=>b.classList.toggle('sel', b.dataset.color===color));
-};
-window.saveAccount = function(){
+}
+function saveAccount(){
   const name = document.getElementById('accName').value.trim();
   if(!name){ toast('Ponle un nombre'); return; }
   const type = document.getElementById('accType').value;
@@ -1705,14 +1356,14 @@ window.saveAccount = function(){
     icon: accDraft.icon, color: accDraft.color, createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Cuenta creada');
-};
-window.openAccountDetail = function(id){
+}
+function openAccountDetail(id){
   const acc = state.accounts.find(a=>a.id===id);
   if(!acc) return;
   const bal = accountBalance(acc.id);
   const txs = state.transactions
     .filter(t=>t.accountId===id || t.toAccountId===id)
-    .sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0))
+    .sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt-a.createdAt)
     .slice(0,20);
   const canTransfer = state.accounts.length >= 2;
   openSheet(acc.name, `
@@ -1729,8 +1380,8 @@ window.openAccountDetail = function(id){
     <button class="btn btn-ghost" onclick="openAccountEditSheet('${acc.id}')">Editar cuenta</button>
     <button class="btn btn-danger" onclick="deleteAccount('${acc.id}')">Eliminar cuenta</button>
   `);
-};
-window.openAccountEditSheet = function(id){
+}
+function openAccountEditSheet(id){
   const acc = state.accounts.find(a=>a.id===id);
   if(!acc) return;
   const typeOpts = Object.entries(ACCOUNT_TYPES).map(([k,v])=>`<option value="${k}" ${k===acc.type?'selected':''}>${v}</option>`).join('');
@@ -1750,8 +1401,8 @@ window.openAccountEditSheet = function(id){
     <button class="btn btn-primary" onclick="updateAccount('${acc.id}')">Guardar cambios</button>
     <button class="btn btn-ghost" onclick="openAccountDetail('${acc.id}')">Cancelar</button>
   `);
-};
-window.updateAccount = function(id){
+}
+function updateAccount(id){
   const acc = state.accounts.find(a=>a.id===id);
   if(!acc) return;
   const name = document.getElementById('editAccName').value.trim();
@@ -1760,8 +1411,8 @@ window.updateAccount = function(id){
   acc.type = document.getElementById('editAccType').value;
   acc.initial = parseFloat(document.getElementById('editAccInitial').value) || 0;
   save(); closeSheet(); renderAll(); toast('Cuenta actualizada');
-};
-window.deleteAccount = function(id){
+}
+function deleteAccount(id){
   const hasTx = state.transactions.some(t=>t.accountId===id || t.toAccountId===id);
   const msg = hasTx
     ? 'Esta cuenta tiene movimientos asociados. ¿Eliminar cuenta y todos sus movimientos?'
@@ -1770,13 +1421,13 @@ window.deleteAccount = function(id){
   state.accounts = state.accounts.filter(a=>a.id!==id);
   state.transactions = state.transactions.filter(t=>t.accountId!==id && t.toAccountId!==id);
   save(); closeSheet(); renderAll(); toast('Cuenta eliminada');
-};
+}
 
 /* ============================================================
    ACTIVOS
    ============================================================ */
 let assetDraft = { icon:'🏠', color:'#4c8dff', type:'realestate' };
-window.openAssetSheet = function(){
+function openAssetSheet(){
   assetDraft = { icon:'🏠', color:'#4c8dff', type:'realestate' };
   const typeOpts = Object.entries(ASSET_TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
   openSheet('Nuevo activo', `
@@ -1814,16 +1465,16 @@ window.openAssetSheet = function(){
     </div>
     <button class="btn btn-primary" onclick="saveAsset()">Guardar activo</button>
   `);
-};
-window.pickAssetIcon = function(icon){
+}
+function pickAssetIcon(icon){
   assetDraft.icon = icon;
   document.querySelectorAll('#iconPick button').forEach(b=>b.classList.toggle('sel', b.dataset.icon===icon));
-};
-window.pickAssetColor = function(color){
+}
+function pickAssetColor(color){
   assetDraft.color = color;
   document.querySelectorAll('#colorPick button').forEach(b=>b.classList.toggle('sel', b.dataset.color===color));
-};
-window.saveAsset = function(){
+}
+function saveAsset(){
   const name = document.getElementById('assetName').value.trim();
   if(!name){ toast('Ponle un nombre'); return; }
   const value = parseFloat(document.getElementById('assetValue').value);
@@ -1838,8 +1489,8 @@ window.saveAsset = function(){
     createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Activo registrado');
-};
-window.openAssetDetail = function(id){
+}
+function openAssetDetail(id){
   const a = state.assets.find(x=>x.id===id);
   if(!a) return;
   const cur = assetCurrentValue(a);
@@ -1857,8 +1508,8 @@ window.openAssetDetail = function(id){
     <button class="btn btn-ghost" onclick="openAssetEditSheet('${a.id}')">✏️ Editar</button>
     <button class="btn btn-danger" onclick="deleteAsset('${a.id}')">Eliminar activo</button>
   `);
-};
-window.openAssetEditSheet = function(id){
+}
+function openAssetEditSheet(id){
   const a = state.assets.find(x=>x.id===id);
   if(!a) return;
   const typeOpts = Object.entries(ASSET_TYPES).map(([k,v])=>`<option value="${k}" ${k===a.type?'selected':''}>${v}</option>`).join('');
@@ -1886,8 +1537,8 @@ window.openAssetEditSheet = function(id){
     <button class="btn btn-primary" onclick="updateAsset('${a.id}')">Guardar cambios</button>
     <button class="btn btn-ghost" onclick="openAssetDetail('${a.id}')">Cancelar</button>
   `);
-};
-window.updateAsset = function(id){
+}
+function updateAsset(id){
   const a = state.assets.find(x=>x.id===id);
   if(!a) return;
   const name = document.getElementById('editAssetName').value.trim();
@@ -1901,8 +1552,8 @@ window.updateAsset = function(id){
   a.depreciation = parseFloat(document.getElementById('editAssetDep').value) || 0;
   a.notes = document.getElementById('editAssetNotes').value.trim();
   save(); closeSheet(); renderAll(); toast('Activo actualizado');
-};
-window.openSellAssetSheet = function(id){
+}
+function openSellAssetSheet(id){
   const a = state.assets.find(x=>x.id===id);
   if(!a) return;
   const accOpts = state.accounts.map(acc=>`<option value="${acc.id}">${escapeHtml(acc.name)}</option>`).join('');
@@ -1925,8 +1576,8 @@ window.openSellAssetSheet = function(id){
     </div>
     <button class="btn btn-success" onclick="confirmSellAsset('${a.id}')">Confirmar venta</button>
   `);
-};
-window.confirmSellAsset = function(id){
+}
+function confirmSellAsset(id){
   const a = state.assets.find(x=>x.id===id);
   if(!a) return;
   const price = parseFloat(document.getElementById('sellPrice').value);
@@ -1943,18 +1594,18 @@ window.confirmSellAsset = function(id){
   a.soldDate = date;
   save(); closeSheet(); renderAll();
   toast(`Venta registrada: +${fmt(price)}`);
-};
-window.deleteAsset = function(id){
+}
+function deleteAsset(id){
   if(!confirm('¿Eliminar este activo?')) return;
   state.assets = state.assets.filter(a=>a.id!==id);
   save(); closeSheet(); renderAll(); toast('Activo eliminado');
-};
+}
 
 /* ============================================================
    PASIVOS
    ============================================================ */
 let liabDraft = { icon:'🏦', color:'#ff5c5c', type:'personal' };
-window.openLiabilitySheet = function(){
+function openLiabilitySheet(){
   liabDraft = { icon:'🏦', color:'#ff5c5c', type:'personal' };
   const typeOpts = Object.entries(LIABILITY_TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
   openSheet('Nuevo pasivo', `
@@ -1992,16 +1643,16 @@ window.openLiabilitySheet = function(){
     </div>
     <button class="btn btn-primary" onclick="saveLiability()">Guardar pasivo</button>
   `);
-};
-window.pickLiabIcon = function(icon){
+}
+function pickLiabIcon(icon){
   liabDraft.icon = icon;
   document.querySelectorAll('#iconPick button').forEach(b=>b.classList.toggle('sel', b.dataset.icon===icon));
-};
-window.pickLiabColor = function(color){
+}
+function pickLiabColor(color){
   liabDraft.color = color;
   document.querySelectorAll('#colorPick button').forEach(b=>b.classList.toggle('sel', b.dataset.color===color));
-};
-window.saveLiability = function(){
+}
+function saveLiability(){
   const name = document.getElementById('liabName').value.trim();
   if(!name){ toast('Ponle un nombre'); return; }
   const initial = parseFloat(document.getElementById('liabInitial').value) || 0;
@@ -2018,8 +1669,8 @@ window.saveLiability = function(){
     createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Pasivo registrado');
-};
-window.openLiabilityDetail = function(id){
+}
+function openLiabilityDetail(id){
   const l = state.liabilities.find(x=>x.id===id);
   if(!l) return;
   const typeName = LIABILITY_TYPES[l.type] || l.type;
@@ -2046,8 +1697,8 @@ window.openLiabilityDetail = function(id){
     <button class="btn btn-ghost" onclick="openLiabilityEditSheet('${l.id}')">✏️ Editar</button>
     <button class="btn btn-danger" onclick="deleteLiability('${l.id}')">Eliminar pasivo</button>
   `);
-};
-window.openLiabilityPaymentSheet = function(id, action){
+}
+function openLiabilityPaymentSheet(id, action){
   const l = state.liabilities.find(x=>x.id===id);
   if(!l) return;
   const titles = {payment:'Abonar al pasivo', increase:'Aumentar deuda', settle:'Liquidar pasivo'};
@@ -2076,8 +1727,8 @@ window.openLiabilityPaymentSheet = function(id, action){
     </div>
     <button class="btn btn-primary" onclick="confirmLiabilityAction('${l.id}','${action}')">Confirmar</button>
   `);
-};
-window.confirmLiabilityAction = function(id, action){
+}
+function confirmLiabilityAction(id, action){
   const l = state.liabilities.find(x=>x.id===id);
   if(!l) return;
   const amount = parseFloat(document.getElementById('payAmount').value);
@@ -2109,8 +1760,8 @@ window.confirmLiabilityAction = function(id, action){
     toast(action==='settle'?'Pasivo liquidado':'Abono registrado');
   }
   save(); closeSheet(); renderAll();
-};
-window.openLiabilityEditSheet = function(id){
+}
+function openLiabilityEditSheet(id){
   const l = state.liabilities.find(x=>x.id===id);
   if(!l) return;
   const typeOpts = Object.entries(LIABILITY_TYPES).map(([k,v])=>`<option value="${k}" ${k===l.type?'selected':''}>${v}</option>`).join('');
@@ -2138,8 +1789,8 @@ window.openLiabilityEditSheet = function(id){
     <button class="btn btn-primary" onclick="updateLiability('${l.id}')">Guardar cambios</button>
     <button class="btn btn-ghost" onclick="openLiabilityDetail('${l.id}')">Cancelar</button>
   `);
-};
-window.updateLiability = function(id){
+}
+function updateLiability(id){
   const l = state.liabilities.find(x=>x.id===id);
   if(!l) return;
   const name = document.getElementById('editLiabName').value.trim();
@@ -2154,18 +1805,18 @@ window.updateLiability = function(id){
   l.balance = newBalance;
   l.notes = document.getElementById('editLiabNotes').value.trim();
   save(); closeSheet(); renderAll(); toast('Pasivo actualizado');
-};
-window.deleteLiability = function(id){
+}
+function deleteLiability(id){
   if(!confirm('¿Eliminar este pasivo?')) return;
   state.liabilities = state.liabilities.filter(x=>x.id!==id);
   save(); closeSheet(); renderAll(); toast('Pasivo eliminado');
-};
+}
 
 /* ============================================================
    CATEGORÍAS
    ============================================================ */
 let catDraft = { icon:'🍔', color:'#ff5c5c', kind:'expense' };
-window.openCategorySheet = function(kind){
+function openCategorySheet(kind){
   catDraft = {
     icon: kind==='income'?'💵':'🍔',
     color: kind==='income'?'#2ecc71':'#ff5c5c',
@@ -2190,16 +1841,16 @@ window.openCategorySheet = function(kind){
     </div>
     <button class="btn btn-primary" onclick="saveCategory()">Guardar categoría</button>
   `);
-};
-window.pickCatIcon = function(icon){
+}
+function pickCatIcon(icon){
   catDraft.icon = icon;
   document.querySelectorAll('#iconPick button').forEach(b=>b.classList.toggle('sel', b.dataset.icon===icon));
-};
-window.pickCatColor = function(color){
+}
+function pickCatColor(color){
   catDraft.color = color;
   document.querySelectorAll('#colorPick button').forEach(b=>b.classList.toggle('sel', b.dataset.color===color));
-};
-window.saveCategory = function(){
+}
+function saveCategory(){
   const name = document.getElementById('catName').value.trim();
   if(!name){ toast('Ponle un nombre'); return; }
   const exists = state.categories.some(c=>c.kind===catDraft.kind && c.name.toLowerCase()===name.toLowerCase());
@@ -2209,8 +1860,8 @@ window.saveCategory = function(){
     icon: catDraft.icon, color: catDraft.color, createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Categoría creada');
-};
-window.deleteCategory = function(id){
+}
+function deleteCategory(id){
   const used = state.transactions.filter(t=>t.categoryId===id).length;
   const msg = used>0
     ? `Esta categoría está siendo usada en ${used} movimiento(s). ¿Eliminar?`
@@ -2220,13 +1871,13 @@ window.deleteCategory = function(id){
   state.transactions.forEach(t=>{ if(t.categoryId===id) t.categoryId=''; });
   state.recurring.forEach(r=>{ if(r.categoryId===id) r.categoryId=''; });
   save(); renderAll(); toast('Categoría eliminada');
-};
+}
 
 /* ============================================================
    RECURRENTE
    ============================================================ */
 let recDraft = { kind:'expense' };
-window.openRecurringSheet = function(){
+function openRecurringSheet(){
   if(state.accounts.length===0){ toast('Primero crea una cuenta'); return openAccountSheet(); }
   recDraft = { kind:'expense' };
   const accOpts = state.accounts.map(a=>`<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
@@ -2273,16 +1924,16 @@ window.openRecurringSheet = function(){
     </div>
     <button class="btn btn-primary" onclick="saveRecurring()">Guardar</button>
   `);
-};
-window.setRecKind = function(kind){
+}
+function setRecKind(kind){
   recDraft.kind = kind;
   document.querySelectorAll('#recKindSeg button').forEach(b=>{
     b.classList.toggle('active', b.dataset.kind===kind);
   });
   const catSel = document.getElementById('recCategory');
   if(catSel) catSel.innerHTML = buildCategoryOptions(kind);
-};
-window.saveRecurring = function(){
+}
+function saveRecurring(){
   const desc = document.getElementById('recDesc').value.trim();
   const amount = parseFloat(document.getElementById('recAmount').value);
   const frequency = document.getElementById('recFreq').value;
@@ -2297,13 +1948,13 @@ window.saveRecurring = function(){
     categoryId: categoryId || '', createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Programado creado');
-};
-window.deleteRecurring = function(id){
+}
+function deleteRecurring(id){
   if(!confirm('¿Eliminar este programado?')) return;
   state.recurring = state.recurring.filter(r=>r.id!==id);
   save(); renderAll(); toast('Programado eliminado');
-};
-window.applyRecurring = function(id){
+}
+function applyRecurring(id){
   const r = state.recurring.find(x=>x.id===id);
   if(!r) return;
   state.transactions.push({
@@ -2312,7 +1963,7 @@ window.applyRecurring = function(id){
     accountId: r.accountId, date: today(), createdAt: Date.now()
   });
   save(); closeSheet(); renderAll(); toast('Movimiento registrado');
-};
+}
 
 /* ============================================================
    INFORMES
@@ -2346,8 +1997,7 @@ function getFilteredTransactions(){
 }
 
 function renderReports(){
-  const nwr = document.getElementById('netWorthReport');
-  if(nwr) nwr.innerHTML = netWorthCardHTML();
+  document.getElementById('netWorthReport').innerHTML = netWorthCardHTML();
 
   const txs = getFilteredTransactions();
   const incomes = txs.filter(t=>t.kind==='income');
@@ -2358,28 +2008,22 @@ function renderReports(){
   const totalTr = transfers.reduce((s,t)=>s+t.amount,0);
   const balance = totalInc - totalExp;
 
-  const set = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
-  set('repIncome', fmt(totalInc));
-  set('repExpense', fmt(totalExp));
-  set('repBalance', fmtSigned(balance));
-  const rb = document.getElementById('repBalance');
-  if(rb) rb.className = 'val ' + (balance>=0?'pos':'neg');
-  set('repIncomeCount', `${incomes.length} mov.`);
-  set('repExpenseCount', `${expenses.length} mov.`);
-  set('repTxCount', `${txs.length} movimientos`);
-  set('repTransfer', fmt(totalTr));
-  set('repTransferCount', `${transfers.length} mov.`);
+  document.getElementById('repIncome').textContent = fmt(totalInc);
+  document.getElementById('repExpense').textContent = fmt(totalExp);
+  document.getElementById('repBalance').textContent = fmtSigned(balance);
+  document.getElementById('repBalance').className = 'val ' + (balance>=0?'pos':'neg');
+  document.getElementById('repIncomeCount').textContent = `${incomes.length} mov.`;
+  document.getElementById('repExpenseCount').textContent = `${expenses.length} mov.`;
+  document.getElementById('repTxCount').textContent = `${txs.length} movimientos`;
+  document.getElementById('repTransfer').textContent = fmt(totalTr);
+  document.getElementById('repTransferCount').textContent = `${transfers.length} mov.`;
 
   const expGroups = groupByCategory(expenses);
   const incGroups = groupByCategory(incomes);
-  const de = document.getElementById('donutExpense');
-  const di = document.getElementById('donutIncome');
-  const cbe = document.getElementById('catBreakdownExpense');
-  const cbi = document.getElementById('catBreakdownIncome');
-  if(de) de.innerHTML = donutHTML(expGroups, totalExp, 'Sin egresos');
-  if(di) di.innerHTML = donutHTML(incGroups, totalInc, 'Sin ingresos');
-  if(cbe) cbe.innerHTML = breakdownHTML(expGroups, totalExp, 'Sin egresos en el periodo');
-  if(cbi) cbi.innerHTML = breakdownHTML(incGroups, totalInc, 'Sin ingresos en el periodo');
+  document.getElementById('donutExpense').innerHTML = donutHTML(expGroups, totalExp, 'Sin egresos');
+  document.getElementById('donutIncome').innerHTML = donutHTML(incGroups, totalInc, 'Sin ingresos');
+  document.getElementById('catBreakdownExpense').innerHTML = breakdownHTML(expGroups, totalExp, 'Sin egresos en el periodo');
+  document.getElementById('catBreakdownIncome').innerHTML = breakdownHTML(incGroups, totalInc, 'Sin ingresos en el periodo');
 
   renderMonthlyClose();
 }
@@ -2471,7 +2115,6 @@ function breakdownHTML(groups, total, emptyMsg){
 function renderMonthlyClose(){
   const months = getMonthlyCloses(6);
   const el = document.getElementById('monthlyClose');
-  if(!el) return;
   if(months.length===0){
     el.innerHTML = `<div class="empty" style="padding:20px"><span class="big">📅</span>Sin datos para mostrar</div>`;
     return;
@@ -2580,236 +2223,10 @@ document.addEventListener('change', e=>{
 });
 
 /* ============================================================
-   EXPORTAR / IMPORTAR RESPALDO
+   INIT
    ============================================================ */
-window.exportData = function(){
-  const payload={app:'Finanzas Personales',version:'1.5.3',exportedAt:new Date().toISOString(),state};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='finanzas-respaldo-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Respaldo descargado');
-};
-window.importData = function(ev){
-  const f=ev.target.files&&ev.target.files[0]; if(!f)return;
-  const reader=new FileReader();reader.onload=function(){try{
-    const data=JSON.parse(reader.result);const incoming=data.state||data;
-    if(!incoming||!Array.isArray(incoming.accounts)||!Array.isArray(incoming.transactions))throw new Error('Formato inválido');
-    if(!confirm('Restaurar este respaldo reemplazará los datos actuales. ¿Continuar?'))return;
-    state=Object.assign({},state,incoming);ensureStateShape();save();renderAllV15();toast('Respaldo restaurado');
-  }catch(e){alert('No se pudo restaurar el respaldo: '+e.message)}finally{ev.target.value='';}};reader.readAsText(f);
-};
-
-/* ============================================================
-   v1.5 EXTENSIONS
-   ============================================================ */
-function monthRange(){const d=new Date();return {from:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),to:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
-function monthTx(){const r=monthRange();return state.transactions.filter(t=>t.date>=r.from&&t.date<=r.to)}
-function budgetSpent(b){return monthTx().filter(t=>t.kind==='expense'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
-function incomeBudgetReceived(b){return monthTx().filter(t=>t.kind==='income'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
-function recurringDue(){return (state.recurring||[]).filter(r=>r.active!==false).reduce((s,r)=>{const d=nextDueDate(r);return d<=monthRange().to?s+r.amount: s},0)}
-function available(){return totalLiquid()-recurringDue()}
-
-function editTx(id){
-  const t=state.transactions.find(x=>x.id===id);if(!t)return;
-  if(t.kind==='transfer'){editTransfer(id);return;}
-  txDraft={kind:t.kind,editingId:id};
-  const accOpts=state.accounts.map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${escapeHtml(a.name)}</option>`).join('');
-  const catOpts=buildCategoryOptions(t.kind,t.categoryId);
-  openSheet('Editar movimiento',`<div class="field"><label>Tipo</label><div class="seg" id="txKindSeg"><button data-kind="income" onclick="setTxKind('income')">Ingreso</button><button data-kind="expense" onclick="setTxKind('expense')">Egreso</button></div></div><div class="field"><label>Monto</label><input id="txAmount" type="number" inputmode="decimal" step="0.01" value="${t.amount}"></div><div class="field"><label>Categoría</label><select id="txCategory">${catOpts}</select></div><div class="field"><label>Descripción</label><input id="txDesc" maxlength="60" value="${escapeHtml(t.description||'')}"></div><div class="field"><label>Cuenta</label><select id="txAccount">${accOpts}</select></div><div class="field"><label>Fecha</label><input id="txDate" type="date" value="${t.date}"></div><button class="btn btn-primary" onclick="saveEditedTx()">Guardar cambios</button><button class="btn btn-danger" onclick="deleteTx('${id}');closeSheet()">Eliminar movimiento</button>`);
-  setTimeout(()=>setTxKind(t.kind),0);
-}
-window.editTx=editTx;
-window.saveEditedTx=function(){const t=state.transactions.find(x=>x.id===txDraft.editingId);if(!t)return;const amount=parseFloat(document.getElementById('txAmount').value);if(!(amount>0)){toast('Monto inválido');return}t.amount=Math.abs(amount);t.kind=txDraft.kind;t.categoryId=document.getElementById('txCategory').value;t.description=document.getElementById('txDesc').value.trim();t.accountId=document.getElementById('txAccount').value;t.date=document.getElementById('txDate').value||today();save();closeSheet();renderAllV15();toast('Movimiento actualizado')};
-window.editTransfer=function(id){const t=state.transactions.find(x=>x.id===id);if(!t)return;transferDraft={editingId:id,fromId:t.accountId,toId:t.toAccountId};openTransferSheet(t.accountId);transferDraft.editingId=id;setTimeout(()=>{const a=document.getElementById('trAmount');if(a)a.value=t.amount;const d=document.getElementById('trDesc');if(d)d.value=t.description||'';const dt=document.getElementById('trDate');if(dt)dt.value=t.date},20)};
-
-window.clearTxFilters=function(){['txSearch','filterKind','filterFrom','filterTo'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=id==='filterKind'?'all':''});const a=document.getElementById('filterAccount');if(a)a.value='all';renderMovementsV15()};
-window.renderMovementsV15=function(){
-  let txs=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
-  const q=(document.getElementById('txSearch')?.value||'').toLowerCase().trim(), acc=document.getElementById('filterAccount')?.value||'all', kind=document.getElementById('filterKind')?.value||'all', from=document.getElementById('filterFrom')?.value||'', to=document.getElementById('filterTo')?.value||'';
-  if(acc!=='all')txs=txs.filter(t=>t.accountId===acc||t.toAccountId===acc);if(kind!=='all')txs=txs.filter(t=>t.kind===kind);if(from)txs=txs.filter(t=>t.date>=from);if(to)txs=txs.filter(t=>t.date<=to);if(q)txs=txs.filter(t=>{const c=t.categoryId?getCategory(t.categoryId):null;return `${t.description||''} ${c?.name||t.category||''}`.toLowerCase().includes(q)});
-  const el=document.getElementById('movementsList');const mc=document.getElementById('movementsCount');if(mc)mc.textContent=`${txs.length} movimiento${txs.length===1?'':'s'}`;if(el)el.innerHTML=txs.length?txs.map(txHTMLV15).join(''):`<div class="empty"><span class="big">🔎</span>No hay resultados.</div>`;
-};
-function txHTMLV15(t){
-  const base=txHTML(t);return base.replace(/<button class="tx-del" onclick="deleteTx\('([^']+)'\)" title="Eliminar">✕<\/button>/,`<div class="item-actions"><button class="icon-btn" onclick="event.stopPropagation();editTx('$1')" title="Editar">✏️</button><button class="tx-del" onclick="event.stopPropagation();deleteTx('$1')" title="Eliminar">✕</button></div>`);
-}
-
-/* ---------- Presupuestos de egresos ---------- */
-window.openBudgetSheet=function(id){const b=id?state.budgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='expense');openSheet(b?'Editar presupuesto de egreso':'Nuevo presupuesto de egreso',`<div class="field"><label>Categoría</label><select id="budgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Límite mensual</label><input id="budgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveBudget('${id||''}')">Guardar</button>`)};
-window.saveBudget=function(id){const cat=document.getElementById('budgetCat').value,amount=parseFloat(document.getElementById('budgetAmount').value);if(!(amount>0)){toast('Límite inválido');return}if(id){Object.assign(state.budgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.budgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto guardado')};
-window.deleteBudget=function(id){if(confirm('¿Eliminar este presupuesto?')){state.budgets=state.budgets.filter(x=>x.id!==id);save();renderAllV15()}};
-window.renderBudgets=function(){const el=document.getElementById('budgetsList');if(!el)return;if(!state.budgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de egresos. Define límites para controlar tus gastos.</div>';return}el.innerHTML=state.budgets.map(b=>{const c=getCategory(b.categoryId),spent=budgetSpent(b),pct=Math.min(100,spent/b.amount*100),over=spent>b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(spent)} de ${fmt(b.amount)} este mes</div></div><div class="item-actions"><button class="icon-btn" onclick="openBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteBudget('${b.id}')">✕</button></div></div><div class="progress"><i class="${over?'over':''}" style="width:${pct}%"></i></div></div>`}).join('')};
-
-/* ---------- Presupuestos de ingresos ---------- */
-window.openIncomeBudgetSheet=function(id){const b=id?state.incomeBudgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='income');openSheet(b?'Editar presupuesto de ingreso':'Nuevo presupuesto de ingreso',`<div class="field"><label>Categoría de ingreso</label><select id="incomeBudgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Ingreso mensual esperado</label><input id="incomeBudgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveIncomeBudget('${id||''}')">Guardar</button>`)};
-window.saveIncomeBudget=function(id){const cat=document.getElementById('incomeBudgetCat').value,amount=parseFloat(document.getElementById('incomeBudgetAmount').value);if(!(amount>0)){toast('Monto inválido');return}if(id){Object.assign(state.incomeBudgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.incomeBudgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto de ingreso guardado')};
-window.deleteIncomeBudget=function(id){if(confirm('¿Eliminar este presupuesto de ingreso?')){state.incomeBudgets=state.incomeBudgets.filter(x=>x.id!==id);save();renderAllV15()}};
-window.renderIncomeBudgets=function(){const el=document.getElementById('incomeBudgetsList');if(!el)return;if(!state.incomeBudgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de ingresos. Define cuánto esperas recibir por categoría.</div>';return}el.innerHTML=state.incomeBudgets.map(b=>{const c=getCategory(b.categoryId),recv=incomeBudgetReceived(b),pct=b.amount>0?Math.min(100,recv/b.amount*100):0;const ok=recv>=b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(recv)} de ${fmt(b.amount)} esperado este mes ${ok?'✅':''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openIncomeBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteIncomeBudget('${b.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%;${ok?'background:var(--green)':''}"></i></div></div>`}).join('')};
-
-/* ---------- Resumen de compatibilidad ---------- */
-window.renderBudgetSummary=function(){
-  const el=document.getElementById('budgetSummaryCard');if(!el)return;
-  const totalExpBudget=state.budgets.reduce((s,b)=>s+b.amount,0);
-  const totalIncBudget=state.incomeBudgets.reduce((s,b)=>s+b.amount,0);
-  const diff=totalIncBudget-totalExpBudget;
-  const ok=diff>=0;
-  const spentExp=state.budgets.reduce((s,b)=>s+budgetSpent(b),0);
-  const recvInc=state.incomeBudgets.reduce((s,b)=>s+incomeBudgetReceived(b),0);
-  el.innerHTML=`
-    <div class="card" style="display:flex;flex-direction:column;gap:10px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="dash-card">
-          <div class="dlabel">Ingresos presupuestados</div>
-          <div class="dvalue pos">${fmt(totalIncBudget)}</div>
-        </div>
-        <div class="dash-card">
-          <div class="dlabel">Egresos presupuestados</div>
-          <div class="dvalue neg">${fmt(totalExpBudget)}</div>
-        </div>
-      </div>
-      <div class="dash-card" style="background:${ok?'rgba(46,204,113,.10)':'rgba(255,92,92,.10)'};border-color:${ok?'rgba(46,204,113,.35)':'rgba(255,92,92,.35)'}">
-        <div class="dlabel">${ok?'✅ Compatible':'⚠️ Incompatible'}</div>
-        <div class="dvalue ${ok?'pos':'neg'}" style="font-size:20px">${ok?'Superávit':'Déficit'} ${fmt(Math.abs(diff))}</div>
-        <div class="item-sub">Ingresos presupuestados ${ok?'≥':'<'} egresos presupuestados</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="dash-card">
-          <div class="dlabel">Ingresos reales del mes</div>
-          <div class="dvalue">${fmt(recvInc)}</div>
-          <div class="item-sub">${totalIncBudget>0?`${Math.round(recvInc/totalIncBudget*100)}% de lo esperado`:''}</div>
-        </div>
-        <div class="dash-card">
-          <div class="dlabel">Egresos reales del mes</div>
-          <div class="dvalue">${fmt(spentExp)}</div>
-          <div class="item-sub">${totalExpBudget>0?`${Math.round(spentExp/totalExpBudget*100)}% del límite`:''}</div>
-        </div>
-      </div>
-    </div>
-  `;
-};
-
-/* ---------- Metas de ahorro ---------- */
-window.openGoalSheet=function(id){const g=id?state.goals.find(x=>x.id===id):null;openSheet(g?'Editar meta':'Nueva meta de ahorro',`<div class="field"><label>Nombre</label><input id="goalName" maxlength="40" value="${escapeHtml(g?.name||'')}" placeholder="Ej. Fondo de emergencia"></div><div class="field"><label>Objetivo</label><input id="goalTarget" type="number" inputmode="decimal" step="0.01" value="${g?.target||''}"></div><div class="field"><label>Ahorrado actualmente</label><input id="goalSaved" type="number" inputmode="decimal" step="0.01" value="${g?.saved||0}"></div><div class="field"><label>Fecha objetivo (opcional)</label><input id="goalDate" type="date" value="${g?.targetDate||''}"></div><button class="btn btn-primary" onclick="saveGoal('${id||''}')">Guardar</button>`)};
-window.saveGoal=function(id){const name=document.getElementById('goalName').value.trim(),target=parseFloat(document.getElementById('goalTarget').value),saved=parseFloat(document.getElementById('goalSaved').value)||0;if(!name||!(target>0)){toast('Completa nombre y objetivo');return}const obj={name,target,saved:Math.max(0,saved),targetDate:document.getElementById('goalDate').value};if(id)Object.assign(state.goals.find(x=>x.id===id),obj);else state.goals.push(Object.assign({id:uid(),createdAt:Date.now()},obj));save();closeSheet();renderAllV15();toast('Meta guardada')};
-window.deleteGoal=function(id){if(confirm('¿Eliminar esta meta?')){state.goals=state.goals.filter(x=>x.id!==id);save();renderAllV15()}};
-window.renderGoals=function(){const el=document.getElementById('goalsList');if(!el)return;if(!state.goals.length){el.innerHTML='<div class="subtle">No hay metas de ahorro.</div>';return}el.innerHTML=state.goals.map(g=>{const pct=Math.min(100,g.saved/g.target*100);return `<div class="goal-item"><div class="item-row"><div class="item-main"><div class="item-title">🎯 ${escapeHtml(g.name)}</div><div class="item-sub">${fmt(g.saved)} de ${fmt(g.target)}${g.targetDate?' · '+formatDate(g.targetDate):''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openGoalSheet('${g.id}')">✏️</button><button class="icon-btn" onclick="deleteGoal('${g.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join('')};
-
-window.renderDashboard=function(){const el=document.getElementById('dashboardHome');if(!el)return;const tx=monthTx(),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0),net=inc-exp,avail=available(),due=recurringDue();el.innerHTML=`<div class="dash-grid"><div class="dash-card"><div class="dlabel">Disponible</div><div class="dvalue ${avail>=0?'pos':'neg'}">${fmtSigned(avail)}</div><div class="item-sub">Después de recurrentes vencidos</div></div><div class="dash-card"><div class="dlabel">Ahorro del mes</div><div class="dvalue ${net>=0?'pos':'neg'}">${fmtSigned(net)}</div><div class="item-sub">${fmt(inc)} ingresos · ${fmt(exp)} egresos</div></div><div class="dash-card"><div class="dlabel">Recurrentes</div><div class="dvalue">${fmt(due)}</div><div class="item-sub">Comprometidos este mes</div></div><div class="dash-card"><div class="dlabel">Presupuestos</div><div class="dvalue">${state.budgets.length + state.incomeBudgets.length}</div><div class="item-sub">${state.budgets.filter(b=>budgetSpent(b)>b.amount).length} excedidos</div></div></div>`};
-
-window.renderRecurringV15=function(){const el=document.getElementById('recurringList');if(!el)return;const rs=state.recurring||[];const due=rs.filter(r=>r.active!==false&&nextDueDate(r)<=today()).length;const rsm=document.getElementById('recurringSummary');if(rsm)rsm.innerHTML=rs.length?`<div class="subtle">${rs.length} programados · ${due} pendientes de registrar</div>`:'';if(!rs.length){el.innerHTML='<div class="empty"><span class="big">🔁</span>Sin pagos o cobros programados.</div>';return}el.innerHTML=rs.map(r=>{const d=nextDueDate(r),active=r.active!==false,over=active&&d<=today();return `<div class="tx" style="margin-bottom:10px;flex-wrap:wrap;opacity:${active?1:.62}"><div class="tx-icon" style="background:${r.kind==='income'?'rgba(46,204,113,.15)':'rgba(255,92,92,.15)'};color:${r.kind==='income'?'var(--green)':'var(--red)'}">${r.kind==='income'?'📥':'📤'}</div><div class="tx-body"><div class="tx-title">${escapeHtml(r.description)}</div><div class="tx-meta"><span>${freqLabel(r.frequency)}</span><span class="badge ${over?'due':''}">${active?'Próx: '+formatDate(d):'Pausado'}</span></div></div><div class="tx-amt ${r.kind==='income'?'pos':'neg'}">${r.kind==='income'?'+':'-'}${fmt(r.amount)}</div><div class="item-actions"><button class="icon-btn" onclick="toggleRecurringV15('${r.id}')">${active?'⏸️':'▶️'}</button><button class="icon-btn" onclick="applyRecurringV15('${r.id}')">✓</button></div></div>`}).join('')};
-window.toggleRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r)return;r.active=r.active===false;save();renderAllV15();toast(r.active?'Recurrente activado':'Recurrente pausado')};
-window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}state.transactions.push({id:uid(),kind:r.kind,amount:r.amount,description:r.description,categoryId:r.categoryId||'',accountId:r.accountId,date:d,createdAt:Date.now(),recurringId:r.id});r.lastAppliedDate=d;save();closeSheet();renderAllV15();toast('Movimiento registrado')};
-
-function historicalLiability(l,date){let bal=l.initialAmount||0;const hist=(l.history||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));for(const h of hist){if(h.date>date)break;if(h.action==='created'){bal=h.amount}else if(h.action==='increase'){bal+=h.amount}else if(h.action==='payment'||h.action==='settled'){bal-=h.amount}else if(h.action==='adjustment'){bal+=h.amount}}return Math.max(0,bal)}
-function historicalAsset(a,date){if(a.createdAt&&new Date(a.createdAt).toISOString().slice(0,10)>date)return 0;let val=assetCurrentValue(a);const vs=(a.valuations||[]).filter(v=>v.date<=date).sort((x,y)=>x.date.localeCompare(y.date));if(vs.length)val=vs[vs.length-1].value;if(a.status==='sold'&&a.soldDate&&a.soldDate<=date)return 0;return val}
-window.calcNetWorthAtV15=function(date){let liq=0;state.accounts.forEach(acc=>{liq+=acc.initial||0;state.transactions.forEach(t=>{if(t.date>date)return;if(t.kind==='transfer'){if(t.accountId===acc.id)liq-=t.amount;if(t.toAccountId===acc.id)liq+=t.amount}else if(t.accountId===acc.id)liq+=(t.kind==='income'?t.amount:t.kind==='expense'?-t.amount:0)})});const act=state.assets.reduce((s,a)=>s+historicalAsset(a,date),0),pas=state.liabilities.reduce((s,l)=>s+historicalLiability(l,date),0);return liq+act-pas};
-
-function monthlyData(n=6){const out=[];const d=new Date();d.setDate(1);for(let i=n-1;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1),y=new Date(d.getFullYear(),d.getMonth()-i+1,0),from=x.toISOString().slice(0,10),to=y.toISOString().slice(0,10),tx=state.transactions.filter(t=>t.date>=from&&t.date<=to),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0);out.push({label:x.toLocaleDateString('es-MX',{month:'short'}),inc,exp,nw:calcNetWorthAtV15(to)});}return out}
-window.renderReportsV15=function(){const d=monthlyData(6),el=document.getElementById('reportTrend');if(el){const max=Math.max(1,...d.flatMap(x=>[x.inc,x.exp]));el.innerHTML='<div class="trend-wrap">'+d.map(x=>`<div class="trend-row"><span>${x.label}</span><div class="trend-bars"><i class="trend-bar" style="height:${Math.max(3,x.inc/max*100)}%" title="Ingreso"></i><i class="trend-bar exp" style="height:${Math.max(3,x.exp/max*100)}%" title="Egreso"></i></div><strong>${fmtSigned(x.inc-x.exp)}</strong></div>`).join('')+'</div>'}
-  const cmp={};const cur=monthTx();cur.filter(t=>t.kind==='expense').forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';cmp[k]=(cmp[k]||0)+t.amount});const prevStart=new Date();prevStart.setDate(1);prevStart.setMonth(prevStart.getMonth()-1);const prevFrom=prevStart.toISOString().slice(0,10),prevTo=new Date(prevStart.getFullYear(),prevStart.getMonth()+1,0).toISOString().slice(0,10);state.transactions.filter(t=>t.kind==='expense'&&t.date>=prevFrom&&t.date<=prevTo).forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';if(!cmp[k])cmp[k]=0;cmp[k]-=t.amount});const ce=document.getElementById('reportCompare');if(ce){const rows=Object.entries(cmp).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,12);ce.innerHTML=rows.length?`<div class="compare-row"><strong>Categoría</strong><strong>Mes</strong><strong>Δ vs ant.</strong></div>`+rows.map(([k,delta])=>{const curv=budgetSpent({categoryId:(state.categories.find(c=>c.name===k)?.id||'' )});const prevv=Math.max(0,curv-delta);return `<div class="compare-row"><span>${escapeHtml(k)}</span><span>${fmt(curv)}</span><span class="${delta<=0?'delta-pos':'delta-neg'}">${delta<=0?'▼':'▲'} ${fmt(Math.abs(delta))}</span></div>`}).join(''):'<div class="subtle">Aún no hay egresos para comparar.</div>'}}
-
-window.saveTransferV15=function(){
-  const fromId=document.getElementById('trFrom').value,toId=document.getElementById('trTo').value,amount=parseFloat(document.getElementById('trAmount').value),desc=document.getElementById('trDesc').value.trim(),date=document.getElementById('trDate').value||today();
-  if(!fromId||!toId||fromId===toId||!(amount>0)){toast('Revisa cuentas y monto');return}
-  const editing=transferDraft.editingId?state.transactions.find(t=>t.id===transferDraft.editingId):null;
-  let available=accountBalance(fromId);if(editing&&editing.accountId===fromId)available+=editing.amount;if(amount>available){toast('Saldo insuficiente');return}
-  const fromAcc=state.accounts.find(a=>a.id===fromId),toAcc=state.accounts.find(a=>a.id===toId);
-  if(editing){Object.assign(editing,{amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date});toast('Transferencia actualizada')}else{state.transactions.push({id:uid(),kind:'transfer',amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date,createdAt:Date.now()});toast('Transferencia registrada')}
-  save();closeSheet();renderAllV15();
-};
-
-window.renderAllV15=function(){
-  ensureStateShape();
-  renderHeader();renderHome();renderAccounts();renderPatrimony();renderCategories();renderReports();renderFilterAccount();renderReportAccountFilter();
-  renderMovementsV15();renderRecurringV15();renderBudgets();renderIncomeBudgets();renderBudgetSummary();renderGoals();renderDashboard();renderReportsV15();
-};
-
-function bindFilters(){['txSearch','filterKind','filterFrom','filterTo','filterAccount'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.dataset.v15){e.dataset.v15='1';e.addEventListener('input',renderMovementsV15);e.addEventListener('change',renderMovementsV15)}})}
-
-/* ============================================================
-   ARRANQUE: AUTENTICACIÓN Y SINCRONIZACIÓN
-   ============================================================ */
-async function showMainApp(){
-  document.getElementById('authScreen').classList.add('hidden');
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('userBadge').style.display = 'flex';
-
-  // Actualizar badge de usuario
-  const avatar = document.getElementById('userAvatar');
-  const uname = document.getElementById('userName');
-  if(currentUser){
-    if(avatar && currentUser.photoURL){
-      avatar.src = currentUser.photoURL;
-      avatar.style.display = 'block';
-    } else if(avatar){
-      avatar.style.display = 'none';
-    }
-    if(uname){
-      const displayName = currentUser.displayName || currentUser.email || 'Usuario';
-      uname.textContent = displayName.split(' ')[0];
-    }
-  }
-
-  renderAllV15();
-  bindFilters();
-}
-
-async function handleUserSignedIn(user){
-  currentUser = user;
-  showLoading('Cargando tus datos...');
-
-  // Suscribirse a cambios remotos
-  if(unsubscribeSnapshot){ unsubscribeSnapshot(); }
-  const ref = userDocRef(user.uid);
-
-  // Cargar datos iniciales
-  const found = await loadFromFirestore(user.uid);
-  if(!found){
-    // Primer inicio de sesión: usar datos locales existentes o seed
-    loadLocal();
-    if(state.accounts.length===0 && state.transactions.length===0){
-      seedInitialData();
-    }
-    // Subir estado inicial a Firestore
-    await saveToFirestore(user.uid, { force: true });
-  }
-
-  // Escuchar cambios remotos (multi-dispositivo)
-  unsubscribeSnapshot = onSnapshot(ref, (snap) => {
-    if(!snap.exists()) return;
-    const data = snap.data();
-    if(!data || !data.state) return;
-
-    // Evitar sobrescribir cambios locales recientes
-    if(Date.now() - lastSyncedAt < 1500) return;
-
-    const incoming = JSON.stringify(data.state);
-    const current = JSON.stringify(state);
-    if(incoming !== current){
-      state = Object.assign({}, state, data.state);
-      ensureStateShape();
-      saveLocal();
-      renderAllV15();
-      toast('Datos actualizados desde la nube');
-    }
-  }, (err) => {
-    console.warn('Error en listener:', err);
-    updateSyncIndicator('offline');
-  });
-
-  hideLoading();
-  await showMainApp();
-}
-
-function showLoading(text){
-  const el = document.getElementById('loadingOverlay');
-  const t = document.getElementById('loadingText');
-  if(t) t.textContent = text || 'Sincronizando...';
-  if(el) el.classList.remove('hidden');
-}
-function hideLoading(){
-  const el = document.getElementById('loadingOverlay');
-  if(el) el.classList.add('hidden');
-}
-
-function seedInitialData(){
+load();
+if(state.accounts.length===0 && state.transactions.length===0){
   state.accounts = [
     {id:uid(), name:'Efectivo', type:'cash', initial:1500, icon:'💵', color:'#2ecc71', createdAt:Date.now()},
     {id:uid(), name:'Tarjeta Débito', type:'debit', initial:3200, icon:'💳', color:'#4c8dff', createdAt:Date.now()},
@@ -2830,47 +2247,186 @@ function seedInitialData(){
     {name:'Otros', kind:'expense', icon:'🧾', color:'#9a9aa2'}
   ];
   state.categories = defaultCats.map(c=>({id:uid(), createdAt:Date.now(), ...c}));
-  saveLocal();
+  save();
+} else if(state.categories.length===0){
+  const defaultCats = [
+    {name:'Sueldo', kind:'income', icon:'💼', color:'#2ecc71'},
+    {name:'Ventas', kind:'income', icon:'💵', color:'#22d3ee'},
+    {name:'Inversiones', kind:'income', icon:'📈', color:'#4c8dff'},
+    {name:'Regalos', kind:'income', icon:'🎁', color:'#a78bfa'},
+    {name:'Comida', kind:'expense', icon:'🍔', color:'#ff5c5c'},
+    {name:'Supermercado', kind:'expense', icon:'🛒', color:'#ffa726'},
+    {name:'Transporte', kind:'expense', icon:'🚗', color:'#facc15'},
+    {name:'Renta', kind:'expense', icon:'🏠', color:'#f472b6'},
+    {name:'Servicios', kind:'expense', icon:'💡', color:'#4c8dff'},
+    {name:'Entretenimiento', kind:'expense', icon:'🎬', color:'#a78bfa'},
+    {name:'Salud', kind:'expense', icon:'💊', color:'#2ecc71'},
+    {name:'Otros', kind:'expense', icon:'🧾', color:'#9a9aa2'}
+  ];
+  state.categories = defaultCats.map(c=>({id:uid(), createdAt:Date.now(), ...c}));
+  save();
 }
+renderAll();
 
-// Listener principal de autenticación
-onAuthStateChanged(auth, async (user) => {
-  if(user){
-    await handleUserSignedIn(user);
-  } else {
-    currentUser = null;
-    if(unsubscribeSnapshot){ unsubscribeSnapshot(); unsubscribeSnapshot = null; }
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('authScreen').classList.remove('hidden');
-    document.getElementById('userBadge').style.display = 'none';
+/* ============================================================
+   v1.5 EXTENSIONS + v1.5.2
+   ============================================================ */
+(function(){
+  const oldLoad = window.load;
+  function migrateV15(){
+    state.budgets = Array.isArray(state.budgets)?state.budgets:[];
+    state.incomeBudgets = Array.isArray(state.incomeBudgets)?state.incomeBudgets:[];
+    state.goals = Array.isArray(state.goals)?state.goals:[];
+    state.settings = Object.assign({currency:'$', monthBudgetDefault:0},state.settings||{});
+    state.recurring = (state.recurring||[]).map(r=>Object.assign({active:true,endDate:'',lastAppliedDate:''},r));
+    state.liabilities = (state.liabilities||[]).map(l=>{l.history=Array.isArray(l.history)?l.history:[]; if(!l.initialAmount && typeof l.balance==='number') l.initialAmount=l.balance; return l;});
+    state.assets = (state.assets||[]).map(a=>{a.valuations=Array.isArray(a.valuations)?a.valuations:[]; if(!a.valuations.length && typeof a.value==='number') a.valuations=[{date:a.createdAt?new Date(a.createdAt).toISOString().slice(0,10):today(),value:a.value}]; return a;});
+    save();
   }
-});
+  window.migrateV15=migrateV15;
 
-// Manejar redirect result (fallback)
-getRedirectResult(auth).catch((err) => {
-  if(err && err.code && err.code !== 'auth/no-auth-event'){
-    console.warn('Redirect result:', err);
-  }
-});
-</script>
-</body>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAvnb2Kh78FIzWKzkK-mTwDqeNB7s8mKUg",
-    authDomain: "finanzas-67e7b.firebaseapp.com",
-    projectId: "finanzas-67e7b",
-    storageBucket: "finanzas-67e7b.firebasestorage.app",
-    messagingSenderId: "53062957577",
-    appId: "1:53062957577:web:45bbea1872cfc7d88c16d8"
+  window.exportData=function(){
+    const payload={app:'Finanzas Personales',version:'1.5.2',exportedAt:new Date().toISOString(),state};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='finanzas-respaldo-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Respaldo descargado');
+  };
+  window.importData=function(ev){
+    const f=ev.target.files&&ev.target.files[0]; if(!f)return;
+    const reader=new FileReader();reader.onload=function(){try{
+      const data=JSON.parse(reader.result);const incoming=data.state||data;
+      if(!incoming||!Array.isArray(incoming.accounts)||!Array.isArray(incoming.transactions))throw new Error('Formato inválido');
+      if(!confirm('Restaurar este respaldo reemplazará los datos actuales. ¿Continuar?'))return;
+      state=Object.assign({},state,incoming);migrateV15();renderAllV15();toast('Respaldo restaurado');
+    }catch(e){alert('No se pudo restaurar el respaldo: '+e.message)}finally{ev.target.value='';}};reader.readAsText(f);
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
+  function monthKey(d){return d.slice(0,7)}
+  function monthRange(){const d=new Date();return {from:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),to:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
+  function monthTx(){const r=monthRange();return state.transactions.filter(t=>t.date>=r.from&&t.date<=r.to)}
+  function budgetSpent(b){return monthTx().filter(t=>t.kind==='expense'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
+  function incomeBudgetReceived(b){return monthTx().filter(t=>t.kind==='income'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
+  function recurringDue(){return (state.recurring||[]).filter(r=>r.active!==false).reduce((s,r)=>{const d=nextDueDate(r);return d<=monthRange().to?s+r.amount: s},0)}
+  function available(){return totalLiquid()-recurringDue()}
+  window.availableToSpend=available;
+
+  function editTx(id){
+    const t=state.transactions.find(x=>x.id===id);if(!t)return;
+    if(t.kind==='transfer'){editTransfer(id);return;}
+    txDraft={kind:t.kind,editingId:id};
+    const accOpts=state.accounts.map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${escapeHtml(a.name)}</option>`).join('');
+    const catOpts=buildCategoryOptions(t.kind,t.categoryId);
+    openSheet('Editar movimiento',`<div class="field"><label>Tipo</label><div class="seg" id="txKindSeg"><button data-kind="income" onclick="setTxKind('income')">Ingreso</button><button data-kind="expense" onclick="setTxKind('expense')">Egreso</button></div></div><div class="field"><label>Monto</label><input id="txAmount" type="number" inputmode="decimal" step="0.01" value="${t.amount}"></div><div class="field"><label>Categoría</label><select id="txCategory">${catOpts}</select></div><div class="field"><label>Descripción</label><input id="txDesc" maxlength="60" value="${escapeHtml(t.description||'')}"></div><div class="field"><label>Cuenta</label><select id="txAccount">${accOpts}</select></div><div class="field"><label>Fecha</label><input id="txDate" type="date" value="${t.date}"></div><button class="btn btn-primary" onclick="saveEditedTx()">Guardar cambios</button><button class="btn btn-danger" onclick="deleteTx('${id}');closeSheet()">Eliminar movimiento</button>`);
+    setTimeout(()=>setTxKind(t.kind),0);
+  }
+  window.editTx=editTx;
+  window.saveEditedTx=function(){const t=state.transactions.find(x=>x.id===txDraft.editingId);if(!t)return;const amount=parseFloat(document.getElementById('txAmount').value);if(!(amount>0)){toast('Monto inválido');return}t.amount=Math.abs(amount);t.kind=txDraft.kind;t.categoryId=document.getElementById('txCategory').value;t.description=document.getElementById('txDesc').value.trim();t.accountId=document.getElementById('txAccount').value;t.date=document.getElementById('txDate').value||today();save();closeSheet();renderAllV15();toast('Movimiento actualizado')};
+  window.editTransfer=function(id){const t=state.transactions.find(x=>x.id===id);if(!t)return;transferDraft={editingId:id,fromId:t.accountId,toId:t.toAccountId};openTransferSheet(t.accountId);transferDraft.editingId=id;setTimeout(()=>{const a=document.getElementById('trAmount');if(a)a.value=t.amount;const d=document.getElementById('trDesc');if(d)d.value=t.description||'';const dt=document.getElementById('trDate');if(dt)dt.value=t.date},20)};
+
+  window.clearTxFilters=function(){['txSearch','filterKind','filterFrom','filterTo'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=id==='filterKind'?'all':''});const a=document.getElementById('filterAccount');if(a)a.value='all';renderMovementsV15()};
+  window.renderMovementsV15=function(){
+    let txs=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+    const q=(document.getElementById('txSearch')?.value||'').toLowerCase().trim(), acc=document.getElementById('filterAccount')?.value||'all', kind=document.getElementById('filterKind')?.value||'all', from=document.getElementById('filterFrom')?.value||'', to=document.getElementById('filterTo')?.value||'';
+    if(acc!=='all')txs=txs.filter(t=>t.accountId===acc||t.toAccountId===acc);if(kind!=='all')txs=txs.filter(t=>t.kind===kind);if(from)txs=txs.filter(t=>t.date>=from);if(to)txs=txs.filter(t=>t.date<=to);if(q)txs=txs.filter(t=>{const c=t.categoryId?getCategory(t.categoryId):null;return `${t.description||''} ${c?.name||t.category||''}`.toLowerCase().includes(q)});
+    const el=document.getElementById('movementsList');document.getElementById('movementsCount').textContent=`${txs.length} movimiento${txs.length===1?'':'s'}`;el.innerHTML=txs.length?txs.map(txHTMLV15).join(''):`<div class="empty"><span class="big">🔎</span>No hay resultados.</div>`;
+  };
+  function txHTMLV15(t){
+    const base=txHTML(t);return base.replace(/<button class="tx-del" onclick="deleteTx\('([^']+)'\)" title="Eliminar">✕<\/button>/,`<div class="item-actions"><button class="icon-btn" onclick="event.stopPropagation();editTx('$1')" title="Editar">✏️</button><button class="tx-del" onclick="event.stopPropagation();deleteTx('$1')" title="Eliminar">✕</button></div>`);
+  }
+
+  /* ---------- Presupuestos de egresos ---------- */
+  window.openBudgetSheet=function(id){const b=id?state.budgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='expense');openSheet(b?'Editar presupuesto de egreso':'Nuevo presupuesto de egreso',`<div class="field"><label>Categoría</label><select id="budgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Límite mensual</label><input id="budgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveBudget('${id||''}')">Guardar</button>`)};
+  window.saveBudget=function(id){const cat=document.getElementById('budgetCat').value,amount=parseFloat(document.getElementById('budgetAmount').value);if(!(amount>0)){toast('Límite inválido');return}if(id){Object.assign(state.budgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.budgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto guardado')};
+  window.deleteBudget=function(id){if(confirm('¿Eliminar este presupuesto?')){state.budgets=state.budgets.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderBudgets=function(){const el=document.getElementById('budgetsList');if(!el)return;if(!state.budgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de egresos. Define límites para controlar tus gastos.</div>';return}el.innerHTML=state.budgets.map(b=>{const c=getCategory(b.categoryId),spent=budgetSpent(b),pct=Math.min(100,spent/b.amount*100),over=spent>b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(spent)} de ${fmt(b.amount)} este mes</div></div><div class="item-actions"><button class="icon-btn" onclick="openBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteBudget('${b.id}')">✕</button></div></div><div class="progress"><i class="${over?'over':''}" style="width:${pct}%"></i></div></div>`}).join('')};
+
+  /* ---------- Presupuestos de ingresos (NUEVO v1.5.2) ---------- */
+  window.openIncomeBudgetSheet=function(id){const b=id?state.incomeBudgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='income');openSheet(b?'Editar presupuesto de ingreso':'Nuevo presupuesto de ingreso',`<div class="field"><label>Categoría de ingreso</label><select id="incomeBudgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Ingreso mensual esperado</label><input id="incomeBudgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveIncomeBudget('${id||''}')">Guardar</button>`)};
+  window.saveIncomeBudget=function(id){const cat=document.getElementById('incomeBudgetCat').value,amount=parseFloat(document.getElementById('incomeBudgetAmount').value);if(!(amount>0)){toast('Monto inválido');return}if(id){Object.assign(state.incomeBudgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.incomeBudgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto de ingreso guardado')};
+  window.deleteIncomeBudget=function(id){if(confirm('¿Eliminar este presupuesto de ingreso?')){state.incomeBudgets=state.incomeBudgets.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderIncomeBudgets=function(){const el=document.getElementById('incomeBudgetsList');if(!el)return;if(!state.incomeBudgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de ingresos. Define cuánto esperas recibir por categoría.</div>';return}el.innerHTML=state.incomeBudgets.map(b=>{const c=getCategory(b.categoryId),recv=incomeBudgetReceived(b),pct=b.amount>0?Math.min(100,recv/b.amount*100):0;const ok=recv>=b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(recv)} de ${fmt(b.amount)} esperado este mes ${ok?'✅':''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openIncomeBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteIncomeBudget('${b.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%;${ok?'background:var(--green)':''}"></i></div></div>`}).join('')};
+
+  /* ---------- Resumen de compatibilidad ---------- */
+  window.renderBudgetSummary=function(){
+    const el=document.getElementById('budgetSummaryCard');if(!el)return;
+    const totalExpBudget=state.budgets.reduce((s,b)=>s+b.amount,0);
+    const totalIncBudget=state.incomeBudgets.reduce((s,b)=>s+b.amount,0);
+    const diff=totalIncBudget-totalExpBudget;
+    const ok=diff>=0;
+    const spentExp=state.budgets.reduce((s,b)=>s+budgetSpent(b),0);
+    const recvInc=state.incomeBudgets.reduce((s,b)=>s+incomeBudgetReceived(b),0);
+    el.innerHTML=`
+      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="dash-card">
+            <div class="dlabel">Ingresos presupuestados</div>
+            <div class="dvalue pos">${fmt(totalIncBudget)}</div>
+          </div>
+          <div class="dash-card">
+            <div class="dlabel">Egresos presupuestados</div>
+            <div class="dvalue neg">${fmt(totalExpBudget)}</div>
+          </div>
+        </div>
+        <div class="dash-card" style="background:${ok?'rgba(46,204,113,.10)':'rgba(255,92,92,.10)'};border-color:${ok?'rgba(46,204,113,.35)':'rgba(255,92,92,.35)'}">
+          <div class="dlabel">${ok?'✅ Compatible':'⚠️ Incompatible'}</div>
+          <div class="dvalue ${ok?'pos':'neg'}" style="font-size:20px">${ok?'Superávit':'Déficit'} ${fmt(Math.abs(diff))}</div>
+          <div class="item-sub">Ingresos presupuestados ${ok?'≥':'<'} egresos presupuestados</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="dash-card">
+            <div class="dlabel">Ingresos reales del mes</div>
+            <div class="dvalue">${fmt(recvInc)}</div>
+            <div class="item-sub">${totalIncBudget>0?`${Math.round(recvInc/totalIncBudget*100)}% de lo esperado`:''}</div>
+          </div>
+          <div class="dash-card">
+            <div class="dlabel">Egresos reales del mes</div>
+            <div class="dvalue">${fmt(spentExp)}</div>
+            <div class="item-sub">${totalExpBudget>0?`${Math.round(spentExp/totalExpBudget*100)}% del límite`:''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  /* ---------- Metas de ahorro ---------- */
+  window.openGoalSheet=function(id){const g=id?state.goals.find(x=>x.id===id):null;openSheet(g?'Editar meta':'Nueva meta de ahorro',`<div class="field"><label>Nombre</label><input id="goalName" maxlength="40" value="${escapeHtml(g?.name||'')}" placeholder="Ej. Fondo de emergencia"></div><div class="field"><label>Objetivo</label><input id="goalTarget" type="number" inputmode="decimal" step="0.01" value="${g?.target||''}"></div><div class="field"><label>Ahorrado actualmente</label><input id="goalSaved" type="number" inputmode="decimal" step="0.01" value="${g?.saved||0}"></div><div class="field"><label>Fecha objetivo (opcional)</label><input id="goalDate" type="date" value="${g?.targetDate||''}"></div><button class="btn btn-primary" onclick="saveGoal('${id||''}')">Guardar</button>`)};
+  window.saveGoal=function(id){const name=document.getElementById('goalName').value.trim(),target=parseFloat(document.getElementById('goalTarget').value),saved=parseFloat(document.getElementById('goalSaved').value)||0;if(!name||!(target>0)){toast('Completa nombre y objetivo');return}const obj={name,target,saved:Math.max(0,saved),targetDate:document.getElementById('goalDate').value};if(id)Object.assign(state.goals.find(x=>x.id===id),obj);else state.goals.push(Object.assign({id:uid(),createdAt:Date.now()},obj));save();closeSheet();renderAllV15();toast('Meta guardada')};
+  window.deleteGoal=function(id){if(confirm('¿Eliminar esta meta?')){state.goals=state.goals.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderGoals=function(){const el=document.getElementById('goalsList');if(!el)return;if(!state.goals.length){el.innerHTML='<div class="subtle">No hay metas de ahorro.</div>';return}el.innerHTML=state.goals.map(g=>{const pct=Math.min(100,g.saved/g.target*100);return `<div class="goal-item"><div class="item-row"><div class="item-main"><div class="item-title">🎯 ${escapeHtml(g.name)}</div><div class="item-sub">${fmt(g.saved)} de ${fmt(g.target)}${g.targetDate?' · '+formatDate(g.targetDate):''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openGoalSheet('${g.id}')">✏️</button><button class="icon-btn" onclick="deleteGoal('${g.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join('')};
+
+  window.renderDashboard=function(){const el=document.getElementById('dashboardHome');if(!el)return;const tx=monthTx(),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0),net=inc-exp,avail=available(),due=recurringDue();el.innerHTML=`<div class="dash-grid"><div class="dash-card"><div class="dlabel">Disponible</div><div class="dvalue ${avail>=0?'pos':'neg'}">${fmtSigned(avail)}</div><div class="item-sub">Después de recurrentes vencidos</div></div><div class="dash-card"><div class="dlabel">Ahorro del mes</div><div class="dvalue ${net>=0?'pos':'neg'}">${fmtSigned(net)}</div><div class="item-sub">${fmt(inc)} ingresos · ${fmt(exp)} egresos</div></div><div class="dash-card"><div class="dlabel">Recurrentes</div><div class="dvalue">${fmt(due)}</div><div class="item-sub">Comprometidos este mes</div></div><div class="dash-card"><div class="dlabel">Presupuestos</div><div class="dvalue">${state.budgets.length + state.incomeBudgets.length}</div><div class="item-sub">${state.budgets.filter(b=>budgetSpent(b)>b.amount).length} excedidos</div></div></div>`};
+
+  window.renderRecurringV15=function(){const el=document.getElementById('recurringList');if(!el)return;const rs=state.recurring||[];const due=rs.filter(r=>r.active!==false&&nextDueDate(r)<=today()).length;document.getElementById('recurringSummary').innerHTML=rs.length?`<div class="subtle">${rs.length} programados · ${due} pendientes de registrar</div>`:'';if(!rs.length){el.innerHTML='<div class="empty"><span class="big">🔁</span>Sin pagos o cobros programados.</div>';return}el.innerHTML=rs.map(r=>{const d=nextDueDate(r),active=r.active!==false,over=active&&d<=today();return `<div class="tx" style="margin-bottom:10px;flex-wrap:wrap;opacity:${active?1:.62}"><div class="tx-icon" style="background:${r.kind==='income'?'rgba(46,204,113,.15)':'rgba(255,92,92,.15)'};color:${r.kind==='income'?'var(--green)':'var(--red)'}">${r.kind==='income'?'📥':'📤'}</div><div class="tx-body"><div class="tx-title">${escapeHtml(r.description)}</div><div class="tx-meta"><span>${freqLabel(r.frequency)}</span><span class="badge ${over?'due':''}">${active?'Próx: '+formatDate(d):'Pausado'}</span></div></div><div class="tx-amt ${r.kind==='income'?'pos':'neg'}">${r.kind==='income'?'+':'-'}${fmt(r.amount)}</div><div class="item-actions"><button class="icon-btn" onclick="toggleRecurringV15('${r.id}')">${active?'⏸️':'▶️'}</button><button class="icon-btn" onclick="applyRecurringV15('${r.id}')">✓</button></div></div>`}).join('')};
+  window.toggleRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r)return;r.active=r.active===false;save();renderAllV15();toast(r.active?'Recurrente activado':'Recurrente pausado')};
+  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}state.transactions.push({id:uid(),kind:r.kind,amount:r.amount,description:r.description,categoryId:r.categoryId||'',accountId:r.accountId,date:d,createdAt:Date.now(),recurringId:r.id});r.lastAppliedDate=d;save();closeSheet();renderAllV15();toast('Movimiento registrado')};
+
+  function historicalLiability(l,date){let bal=l.initialAmount||0;const hist=(l.history||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));for(const h of hist){if(h.date>date)break;if(h.action==='created'){bal=h.amount}else if(h.action==='increase'){bal+=h.amount}else if(h.action==='payment'||h.action==='settled'){bal-=h.amount}else if(h.action==='adjustment'){bal+=h.amount}}return Math.max(0,bal)}
+  function historicalAsset(a,date){if(a.createdAt&&new Date(a.createdAt).toISOString().slice(0,10)>date)return 0;let val=assetCurrentValue(a);const vs=(a.valuations||[]).filter(v=>v.date<=date).sort((x,y)=>x.date.localeCompare(y.date));if(vs.length)val=vs[vs.length-1].value;if(a.status==='sold'&&a.soldDate&&a.soldDate<=date)return 0;return val}
+  window.calcNetWorthAtV15=function(date){let liq=0;state.accounts.forEach(acc=>{liq+=acc.initial||0;state.transactions.forEach(t=>{if(t.date>date)return;if(t.kind==='transfer'){if(t.accountId===acc.id)liq-=t.amount;if(t.toAccountId===acc.id)liq+=t.amount}else if(t.accountId===acc.id)liq+=(t.kind==='income'?t.amount:t.kind==='expense'?-t.amount:0)})});const act=state.assets.reduce((s,a)=>s+historicalAsset(a,date),0),pas=state.liabilities.reduce((s,l)=>s+historicalLiability(l,date),0);return liq+act-pas};
+
+  function monthlyData(n=6){const out=[];const d=new Date();d.setDate(1);for(let i=n-1;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1),y=new Date(d.getFullYear(),d.getMonth()-i+1,0),from=x.toISOString().slice(0,10),to=y.toISOString().slice(0,10),tx=state.transactions.filter(t=>t.date>=from&&t.date<=to),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0);out.push({label:x.toLocaleDateString('es-MX',{month:'short'}),inc,exp,nw:calcNetWorthAtV15(to)});}return out}
+  window.renderReportsV15=function(){const d=monthlyData(6),el=document.getElementById('reportTrend');if(el){const max=Math.max(1,...d.flatMap(x=>[x.inc,x.exp]));el.innerHTML='<div class="trend-wrap">'+d.map(x=>`<div class="trend-row"><span>${x.label}</span><div class="trend-bars"><i class="trend-bar" style="height:${Math.max(3,x.inc/max*100)}%" title="Ingreso"></i><i class="trend-bar exp" style="height:${Math.max(3,x.exp/max*100)}%" title="Egreso"></i></div><strong>${fmtSigned(x.inc-x.exp)}</strong></div>`).join('')+'</div>'}
+    const cmp={};const cur=monthTx();cur.filter(t=>t.kind==='expense').forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';cmp[k]=(cmp[k]||0)+t.amount});const prevStart=new Date();prevStart.setDate(1);prevStart.setMonth(prevStart.getMonth()-1);const prevFrom=prevStart.toISOString().slice(0,10),prevTo=new Date(prevStart.getFullYear(),prevStart.getMonth()+1,0).toISOString().slice(0,10);state.transactions.filter(t=>t.kind==='expense'&&t.date>=prevFrom&&t.date<=prevTo).forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';if(!cmp[k])cmp[k]=0;cmp[k]-=t.amount});const ce=document.getElementById('reportCompare');if(ce){const rows=Object.entries(cmp).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,12);ce.innerHTML=rows.length?`<div class="compare-row"><strong>Categoría</strong><strong>Mes</strong><strong>Δ vs ant.</strong></div>`+rows.map(([k,delta])=>{const curv=budgetSpent({categoryId:(state.categories.find(c=>c.name===k)?.id||'' )});const prevv=Math.max(0,curv-delta);return `<div class="compare-row"><span>${escapeHtml(k)}</span><span>${fmt(curv)}</span><span class="${delta<=0?'delta-pos':'delta-neg'}">${delta<=0?'▼':'▲'} ${fmt(Math.abs(delta))}</span></div>`}).join(''):'<div class="subtle">Aún no hay egresos para comparar.</div>'}}
+
+  window.saveTransferV15=function(){
+    const fromId=document.getElementById('trFrom').value,toId=document.getElementById('trTo').value,amount=parseFloat(document.getElementById('trAmount').value),desc=document.getElementById('trDesc').value.trim(),date=document.getElementById('trDate').value||today();
+    if(!fromId||!toId||fromId===toId||!(amount>0)){toast('Revisa cuentas y monto');return}
+    const editing=transferDraft.editingId?state.transactions.find(t=>t.id===transferDraft.editingId):null;
+    let available=accountBalance(fromId);if(editing&&editing.accountId===fromId)available+=editing.amount;if(amount>available){toast('Saldo insuficiente');return}
+    const fromAcc=state.accounts.find(a=>a.id===fromId),toAcc=state.accounts.find(a=>a.id===toId);
+    if(editing){Object.assign(editing,{amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date});toast('Transferencia actualizada')}else{state.transactions.push({id:uid(),kind:'transfer',amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date,createdAt:Date.now()});toast('Transferencia registrada')}
+    save();closeSheet();renderAllV15();
+  };
+
+  window.renderAllV15=function(){
+    migrateV15();
+    renderHeader();renderHome();renderAccounts();renderPatrimony();renderCategories();renderReports();renderFilterAccount();renderReportAccountFilter();
+    renderMovementsV15();renderRecurringV15();renderBudgets();renderIncomeBudgets();renderBudgetSummary();renderGoals();renderDashboard();renderReportsV15();
+  };
+  const originalRenderAll=window.renderAll; window.renderAll=renderAllV15;
+  function bindFilters(){['txSearch','filterKind','filterFrom','filterTo','filterAccount'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.dataset.v15){e.dataset.v15='1';e.addEventListener('input',renderMovementsV15);e.addEventListener('change',renderMovementsV15)}})}
+  const oldRenderFilterAccount=window.renderFilterAccount;window.renderFilterAccount=function(){oldRenderFilterAccount();bindFilters()};
+  migrateV15();renderAllV15();bindFilters();
+})();
 </script>
+</body>
 </html>
