@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0d0d">
-<title>Finanzas Personales v1.5.1</title>
+<title>Finanzas Personales v1.5.2</title>
 <style>
   :root{
     --bg:#0d0d0d;
@@ -406,7 +406,6 @@
   .month-close-item .mc-value.pos{color:var(--green)}
   .month-close-item .mc-value.neg{color:var(--red)}
   .month-close-item .mc-delta{font-size:11px;color:var(--text-mute);margin-top:2px}
-  /* Transfer preview */
   .transfer-preview{
     background:var(--surface);
     border:1px dashed var(--border);
@@ -435,7 +434,6 @@
   .transfer-preview .tp-arrow{
     color:var(--accent);font-size:20px;flex:0 0 auto;
   }
-  /* Balance disponible hint */
   .balance-hint{
     font-size:11.5px;color:var(--text-mute);margin-top:6px;
     display:flex;justify-content:space-between;
@@ -468,7 +466,7 @@
 <div class="app">
   <header>
     <div class="header-top">
-      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5.1</small></div>
+      <div class="brand"><span class="dot"></span> Finanzas <small>v1.5.2</small></div>
       <div class="total-balance">
         <div class="label">Balance líquido</div>
         <div class="amount" id="totalBalance">$0.00</div>
@@ -486,13 +484,13 @@
     </div>
     <div class="tabs" id="tabs">
       <button class="tab active" data-view="home">🏠 Inicio</button>
+      <button class="tab" data-view="planning">🎯 Presupuesto</button>
+      <button class="tab" data-view="reports">📊 Informes</button>
       <button class="tab" data-view="accounts">💳 Cuentas</button>
       <button class="tab" data-view="movements">📋 Movimientos</button>
       <button class="tab" data-view="recurring">🔁 Recurrentes</button>
       <button class="tab" data-view="patrimony">🏛️ Patrimonio</button>
-      <button class="tab" data-view="planning">🎯 Presupuesto</button>
       <button class="tab" data-view="categories">🏷️ Categorías</button>
-      <button class="tab" data-view="reports">📊 Informes</button>
     </div>
     <div class="header-tools">
       <button onclick="exportData()">⬇️ Respaldo</button>
@@ -512,75 +510,22 @@
       <div id="homeTx" class="grid-tx"></div>
     </section>
 
-    <!-- ACCOUNTS -->
-    <section class="view" id="view-accounts">
-      <div class="section-title">Mis cuentas (líquidas)</div>
-      <div id="accountsList" class="grid-accounts"></div>
-      <button class="btn btn-ghost" onclick="openTransferSheet()">🔄 Transferir entre cuentas</button>
-      <button class="btn btn-primary" onclick="openAccountSheet()">+ Nueva cuenta</button>
-    </section>
-
-    <!-- MOVEMENTS -->
-    <section class="view" id="view-movements">
-      <div class="section-title">Movimientos</div>
-      <div class="filter-panel">
-        <input id="txSearch" type="search" placeholder="Buscar descripción o categoría…" autocomplete="off">
-        <div class="filter-grid">
-          <select id="filterAccount"></select>
-          <select id="filterKind"><option value="all">Todos los tipos</option><option value="income">Ingresos</option><option value="expense">Egresos</option><option value="transfer">Transferencias</option></select>
-          <input id="filterFrom" type="date" aria-label="Desde">
-          <input id="filterTo" type="date" aria-label="Hasta">
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="clearTxFilters()">Limpiar filtros</button>
-      </div>
-      <div id="movementsCount" class="subtle"></div>
-      <div id="movementsList" class="grid-tx"></div>
-    </section>
-
-    <!-- RECURRING -->
-    <section class="view" id="view-recurring">
-      <div class="section-title">Pagos y cobros programados</div>
-      <div id="recurringSummary"></div>
-      <div id="recurringList"></div>
-      <button class="btn btn-primary" onclick="openRecurringSheet()">+ Nuevo recurrente</button>
-    </section>
-
-    <!-- PATRIMONY -->
-    <section class="view" id="view-patrimony">
-      <div id="netWorthPatrimony"></div>
-      <div class="sec-head">
-        <span class="sec-title">🏠 Activos (bienes y propiedades)</span>
-        <button onclick="openAssetSheet()">+ Añadir</button>
-      </div>
-      <div id="assetsList" class="grid-assets"></div>
-      <div class="sec-head" style="margin-top:8px">
-        <span class="sec-title">💳 Pasivos (deudas y créditos)</span>
-        <button onclick="openLiabilitySheet()">+ Añadir</button>
-      </div>
-      <div id="liabilitiesList" class="grid-assets"></div>
-    </section>
-
-    <!-- CATEGORIES -->
-    <section class="view" id="view-categories">
-      <div class="section-title">
-        Categorías de ingresos
-        <button onclick="openCategorySheet('income')">+ Añadir</button>
-      </div>
-      <div id="incomeCatsList"></div>
-      <div class="section-title" style="margin-top:8px">
-        Categorías de egresos
-        <button onclick="openCategorySheet('expense')">+ Añadir</button>
-      </div>
-      <div id="expenseCatsList"></div>
-    </section>
-
-    <!-- PLANNING / BUDGETS -->
+    <!-- PLANNING / BUDGETS (ahora justo después de Inicio) -->
     <section class="view" id="view-planning">
-      <div class="section-title">Presupuestos mensuales <button onclick="openBudgetSheet()">+ Añadir</button></div>
+      <div class="section-title">Presupuestos de egresos <button onclick="openBudgetSheet()">+ Añadir</button></div>
       <div class="subtle" style="margin-bottom:10px">
         Define cuánto quieres gastar como máximo en cada categoría durante el mes.
       </div>
       <div id="budgetsList"></div>
+
+      <div class="section-title" style="margin-top:18px">Presupuestos de ingresos <button onclick="openIncomeBudgetSheet()">+ Añadir</button></div>
+      <div class="subtle" style="margin-bottom:10px">
+        Define cuánto esperas recibir por cada categoría de ingreso este mes.
+      </div>
+      <div id="incomeBudgetsList"></div>
+
+      <div class="section-title" style="margin-top:18px">Resumen del presupuesto</div>
+      <div id="budgetSummaryCard"></div>
 
       <div class="section-title" style="margin-top:18px">Metas de ahorro <button onclick="openGoalSheet()">+ Añadir</button></div>
       <div class="subtle" style="margin-bottom:10px">
@@ -645,6 +590,68 @@
       <div class="section-title" style="margin-top:12px">Comparación por categorías</div>
       <div id="reportCompare"></div>
     </section>
+
+    <!-- ACCOUNTS -->
+    <section class="view" id="view-accounts">
+      <div class="section-title">Mis cuentas (líquidas)</div>
+      <div id="accountsList" class="grid-accounts"></div>
+      <button class="btn btn-ghost" onclick="openTransferSheet()">🔄 Transferir entre cuentas</button>
+      <button class="btn btn-primary" onclick="openAccountSheet()">+ Nueva cuenta</button>
+    </section>
+
+    <!-- MOVEMENTS -->
+    <section class="view" id="view-movements">
+      <div class="section-title">Movimientos</div>
+      <div class="filter-panel">
+        <input id="txSearch" type="search" placeholder="Buscar descripción o categoría…" autocomplete="off">
+        <div class="filter-grid">
+          <select id="filterAccount"></select>
+          <select id="filterKind"><option value="all">Todos los tipos</option><option value="income">Ingresos</option><option value="expense">Egresos</option><option value="transfer">Transferencias</option></select>
+          <input id="filterFrom" type="date" aria-label="Desde">
+          <input id="filterTo" type="date" aria-label="Hasta">
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="clearTxFilters()">Limpiar filtros</button>
+      </div>
+      <div id="movementsCount" class="subtle"></div>
+      <div id="movementsList" class="grid-tx"></div>
+    </section>
+
+    <!-- RECURRING -->
+    <section class="view" id="view-recurring">
+      <div class="section-title">Pagos y cobros programados</div>
+      <div id="recurringSummary"></div>
+      <div id="recurringList"></div>
+      <button class="btn btn-primary" onclick="openRecurringSheet()">+ Nuevo recurrente</button>
+    </section>
+
+    <!-- PATRIMONY -->
+    <section class="view" id="view-patrimony">
+      <div id="netWorthPatrimony"></div>
+      <div class="sec-head">
+        <span class="sec-title">🏠 Activos (bienes y propiedades)</span>
+        <button onclick="openAssetSheet()">+ Añadir</button>
+      </div>
+      <div id="assetsList" class="grid-assets"></div>
+      <div class="sec-head" style="margin-top:8px">
+        <span class="sec-title">💳 Pasivos (deudas y créditos)</span>
+        <button onclick="openLiabilitySheet()">+ Añadir</button>
+      </div>
+      <div id="liabilitiesList" class="grid-assets"></div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="view" id="view-categories">
+      <div class="section-title">
+        Categorías de ingresos
+        <button onclick="openCategorySheet('income')">+ Añadir</button>
+      </div>
+      <div id="incomeCatsList"></div>
+      <div class="section-title" style="margin-top:8px">
+        Categorías de egresos
+        <button onclick="openCategorySheet('expense')">+ Añadir</button>
+      </div>
+      <div id="expenseCatsList"></div>
+    </section>
   </main>
 
   <button class="fab" onclick="openQuickSheet()" aria-label="Acciones rápidas">+</button>
@@ -665,8 +672,11 @@
 
 <script>
 /* ============================================================
-   FINANZAS PERSONALES v1.5.1
-   Nuevo: Transferencias entre cuentas
+   FINANZAS PERSONALES v1.5.2
+   Cambios v1.5.2:
+   - Pestaña Presupuesto movida junto a Inicio
+   - Presupuestos de ingresos por categoría
+   - Resumen de compatibilidad ingresos vs egresos
    ============================================================ */
 
 const STORAGE_KEY = 'finanzas_app_v1';
@@ -678,6 +688,9 @@ let state = {
   categories: [],
   assets: [],
   liabilities: [],
+  budgets: [],
+  incomeBudgets: [],
+  goals: [],
   settings: { currency: '$' }
 };
 
@@ -696,6 +709,9 @@ function load(){
   if(!state.categories) state.categories = [];
   if(!state.assets) state.assets = [];
   if(!state.liabilities) state.liabilities = [];
+  if(!state.budgets) state.budgets = [];
+  if(!state.incomeBudgets) state.incomeBudgets = [];
+  if(!state.goals) state.goals = [];
   if(!state.settings) state.settings = { currency: '$' };
 }
 
@@ -745,8 +761,8 @@ function accountBalance(accId){
   let bal = acc ? (acc.initial||0) : 0;
   state.transactions.forEach(t=>{
     if(t.kind==='transfer'){
-      if(t.accountId===accId) bal -= t.amount;         // origen
-      if(t.toAccountId===accId) bal += t.amount;       // destino
+      if(t.accountId===accId) bal -= t.amount;
+      if(t.toAccountId===accId) bal += t.amount;
     } else if(t.accountId===accId){
       if(t.kind==='income') bal += t.amount;
       else if(t.kind==='expense') bal -= t.amount;
@@ -1078,7 +1094,7 @@ function closeSheet(){
 }
 
 /* ============================================================
-   QUICK SHEET (FAB) — elige entre movimiento o transferencia
+   QUICK SHEET (FAB)
    ============================================================ */
 function openQuickSheet(){
   if(state.accounts.length===0){
@@ -1229,7 +1245,6 @@ function openTransferSheet(presetFrom){
 function onTransferFromChange(){
   const fromId = document.getElementById('trFrom').value;
   transferDraft.fromId = fromId;
-  // Reconstruir opciones de "hacia" excluyendo la de origen
   const toSel = document.getElementById('trTo');
   const prevTo = toSel.value;
   const opts = state.accounts.filter(a=>a.id!==fromId)
@@ -1285,38 +1300,7 @@ function updateTransferPreview(){
 }
 
 function saveTransfer(){
-  const fromId = document.getElementById('trFrom').value;
-  const toId = document.getElementById('trTo').value;
-  const amount = parseFloat(document.getElementById('trAmount').value);
-  const desc = document.getElementById('trDesc').value.trim();
-  const date = document.getElementById('trDate').value || today();
-
-  if(!fromId || !toId){ toast('Selecciona cuentas'); return; }
-  if(fromId === toId){ toast('Origen y destino deben ser distintos'); return; }
-  if(!amount || amount<=0){ toast('Monto inválido'); return; }
-
-  const fromBal = accountBalance(fromId);
-  if(amount > fromBal){
-    toast('Saldo insuficiente en la cuenta de origen');
-    return;
-  }
-
-  const fromAcc = state.accounts.find(a=>a.id===fromId);
-  const toAcc = state.accounts.find(a=>a.id===toId);
-
-  state.transactions.push({
-    id: uid(),
-    kind: 'transfer',
-    amount: Math.abs(amount),
-    description: desc || `Transferencia: ${fromAcc.name} → ${toAcc.name}`,
-    accountId: fromId,
-    toAccountId: toId,
-    date,
-    createdAt: Date.now()
-  });
-
-  save(); closeSheet(); renderAll();
-  toast(`Transferidos ${fmt(amount)}`);
+  saveTransferV15();
 }
 
 /* ============================================================
@@ -2285,20 +2269,13 @@ if(state.accounts.length===0 && state.transactions.length===0){
 renderAll();
 
 /* ============================================================
-   v1.5 EXTENSIONS
-   - Backup/restore JSON
-   - Edit/search/filter movements
-   - Budgets and savings goals
-   - Dashboard / available-to-spend
-   - Recurring status + due calculation
-   - Historical net-worth reconstruction
-   - Monthly trends and category comparisons
-   - Defensive migration while preserving v1.4 localStorage
+   v1.5 EXTENSIONS + v1.5.2
    ============================================================ */
 (function(){
   const oldLoad = window.load;
   function migrateV15(){
     state.budgets = Array.isArray(state.budgets)?state.budgets:[];
+    state.incomeBudgets = Array.isArray(state.incomeBudgets)?state.incomeBudgets:[];
     state.goals = Array.isArray(state.goals)?state.goals:[];
     state.settings = Object.assign({currency:'$', monthBudgetDefault:0},state.settings||{});
     state.recurring = (state.recurring||[]).map(r=>Object.assign({active:true,endDate:'',lastAppliedDate:''},r));
@@ -2309,7 +2286,7 @@ renderAll();
   window.migrateV15=migrateV15;
 
   window.exportData=function(){
-    const payload={app:'Finanzas Personales',version:'1.5',exportedAt:new Date().toISOString(),state};
+    const payload={app:'Finanzas Personales',version:'1.5.2',exportedAt:new Date().toISOString(),state};
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='finanzas-respaldo-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Respaldo descargado');
   };
@@ -2327,6 +2304,7 @@ renderAll();
   function monthRange(){const d=new Date();return {from:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),to:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
   function monthTx(){const r=monthRange();return state.transactions.filter(t=>t.date>=r.from&&t.date<=r.to)}
   function budgetSpent(b){return monthTx().filter(t=>t.kind==='expense'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
+  function incomeBudgetReceived(b){return monthTx().filter(t=>t.kind==='income'&&t.categoryId===b.categoryId).reduce((s,t)=>s+t.amount,0)}
   function recurringDue(){return (state.recurring||[]).filter(r=>r.active!==false).reduce((s,r)=>{const d=nextDueDate(r);return d<=monthRange().to?s+r.amount: s},0)}
   function available(){return totalLiquid()-recurringDue()}
   window.availableToSpend=available;
@@ -2355,21 +2333,71 @@ renderAll();
     const base=txHTML(t);return base.replace(/<button class="tx-del" onclick="deleteTx\('([^']+)'\)" title="Eliminar">✕<\/button>/,`<div class="item-actions"><button class="icon-btn" onclick="event.stopPropagation();editTx('$1')" title="Editar">✏️</button><button class="tx-del" onclick="event.stopPropagation();deleteTx('$1')" title="Eliminar">✕</button></div>`);
   }
 
-  window.openBudgetSheet=function(id){const b=id?state.budgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='expense');openSheet(b?'Editar presupuesto':'Nuevo presupuesto',`<div class="field"><label>Categoría</label><select id="budgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Límite mensual</label><input id="budgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveBudget('${id||''}')">Guardar</button>`)};
+  /* ---------- Presupuestos de egresos ---------- */
+  window.openBudgetSheet=function(id){const b=id?state.budgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='expense');openSheet(b?'Editar presupuesto de egreso':'Nuevo presupuesto de egreso',`<div class="field"><label>Categoría</label><select id="budgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Límite mensual</label><input id="budgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveBudget('${id||''}')">Guardar</button>`)};
   window.saveBudget=function(id){const cat=document.getElementById('budgetCat').value,amount=parseFloat(document.getElementById('budgetAmount').value);if(!(amount>0)){toast('Límite inválido');return}if(id){Object.assign(state.budgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.budgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto guardado')};
   window.deleteBudget=function(id){if(confirm('¿Eliminar este presupuesto?')){state.budgets=state.budgets.filter(x=>x.id!==id);save();renderAllV15()}};
-  window.renderBudgets=function(){const el=document.getElementById('budgetsList');if(!el)return;if(!state.budgets.length){el.innerHTML='<div class="subtle">No hay presupuestos. Define límites para controlar tus egresos.</div>';return}el.innerHTML=state.budgets.map(b=>{const c=getCategory(b.categoryId),spent=budgetSpent(b),pct=Math.min(100,spent/b.amount*100),over=spent>b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(spent)} de ${fmt(b.amount)} este mes</div></div><div class="item-actions"><button class="icon-btn" onclick="openBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteBudget('${b.id}')">✕</button></div></div><div class="progress"><i class="${over?'over':''}" style="width:${pct}%"></i></div></div>`}).join('')};
+  window.renderBudgets=function(){const el=document.getElementById('budgetsList');if(!el)return;if(!state.budgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de egresos. Define límites para controlar tus gastos.</div>';return}el.innerHTML=state.budgets.map(b=>{const c=getCategory(b.categoryId),spent=budgetSpent(b),pct=Math.min(100,spent/b.amount*100),over=spent>b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(spent)} de ${fmt(b.amount)} este mes</div></div><div class="item-actions"><button class="icon-btn" onclick="openBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteBudget('${b.id}')">✕</button></div></div><div class="progress"><i class="${over?'over':''}" style="width:${pct}%"></i></div></div>`}).join('')};
 
+  /* ---------- Presupuestos de ingresos (NUEVO v1.5.2) ---------- */
+  window.openIncomeBudgetSheet=function(id){const b=id?state.incomeBudgets.find(x=>x.id===id):null;const cats=(state.categories||[]).filter(c=>c.kind==='income');openSheet(b?'Editar presupuesto de ingreso':'Nuevo presupuesto de ingreso',`<div class="field"><label>Categoría de ingreso</label><select id="incomeBudgetCat">${cats.map(c=>`<option value="${c.id}" ${b?.categoryId===c.id?'selected':''}>${c.icon} ${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Ingreso mensual esperado</label><input id="incomeBudgetAmount" type="number" inputmode="decimal" step="0.01" value="${b?.amount||''}" placeholder="0.00"></div><button class="btn btn-primary" onclick="saveIncomeBudget('${id||''}')">Guardar</button>`)};
+  window.saveIncomeBudget=function(id){const cat=document.getElementById('incomeBudgetCat').value,amount=parseFloat(document.getElementById('incomeBudgetAmount').value);if(!(amount>0)){toast('Monto inválido');return}if(id){Object.assign(state.incomeBudgets.find(b=>b.id===id),{categoryId:cat,amount})}else state.incomeBudgets.push({id:uid(),categoryId:cat,amount});save();closeSheet();renderAllV15();toast('Presupuesto de ingreso guardado')};
+  window.deleteIncomeBudget=function(id){if(confirm('¿Eliminar este presupuesto de ingreso?')){state.incomeBudgets=state.incomeBudgets.filter(x=>x.id!==id);save();renderAllV15()}};
+  window.renderIncomeBudgets=function(){const el=document.getElementById('incomeBudgetsList');if(!el)return;if(!state.incomeBudgets.length){el.innerHTML='<div class="subtle">No hay presupuestos de ingresos. Define cuánto esperas recibir por categoría.</div>';return}el.innerHTML=state.incomeBudgets.map(b=>{const c=getCategory(b.categoryId),recv=incomeBudgetReceived(b),pct=b.amount>0?Math.min(100,recv/b.amount*100):0;const ok=recv>=b.amount;return `<div class="budget-item"><div class="item-row"><div class="item-main"><div class="item-title">${c?.icon||'🏷️'} ${escapeHtml(c?.name||'Sin categoría')}</div><div class="item-sub">${fmt(recv)} de ${fmt(b.amount)} esperado este mes ${ok?'✅':''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openIncomeBudgetSheet('${b.id}')">✏️</button><button class="icon-btn" onclick="deleteIncomeBudget('${b.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%;${ok?'background:var(--green)':''}"></i></div></div>`}).join('')};
+
+  /* ---------- Resumen de compatibilidad ---------- */
+  window.renderBudgetSummary=function(){
+    const el=document.getElementById('budgetSummaryCard');if(!el)return;
+    const totalExpBudget=state.budgets.reduce((s,b)=>s+b.amount,0);
+    const totalIncBudget=state.incomeBudgets.reduce((s,b)=>s+b.amount,0);
+    const diff=totalIncBudget-totalExpBudget;
+    const ok=diff>=0;
+    const spentExp=state.budgets.reduce((s,b)=>s+budgetSpent(b),0);
+    const recvInc=state.incomeBudgets.reduce((s,b)=>s+incomeBudgetReceived(b),0);
+    el.innerHTML=`
+      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="dash-card">
+            <div class="dlabel">Ingresos presupuestados</div>
+            <div class="dvalue pos">${fmt(totalIncBudget)}</div>
+          </div>
+          <div class="dash-card">
+            <div class="dlabel">Egresos presupuestados</div>
+            <div class="dvalue neg">${fmt(totalExpBudget)}</div>
+          </div>
+        </div>
+        <div class="dash-card" style="background:${ok?'rgba(46,204,113,.10)':'rgba(255,92,92,.10)'};border-color:${ok?'rgba(46,204,113,.35)':'rgba(255,92,92,.35)'}">
+          <div class="dlabel">${ok?'✅ Compatible':'⚠️ Incompatible'}</div>
+          <div class="dvalue ${ok?'pos':'neg'}" style="font-size:20px">${ok?'Superávit':'Déficit'} ${fmt(Math.abs(diff))}</div>
+          <div class="item-sub">Ingresos presupuestados ${ok?'≥':'<'} egresos presupuestados</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="dash-card">
+            <div class="dlabel">Ingresos reales del mes</div>
+            <div class="dvalue">${fmt(recvInc)}</div>
+            <div class="item-sub">${totalIncBudget>0?`${Math.round(recvInc/totalIncBudget*100)}% de lo esperado`:''}</div>
+          </div>
+          <div class="dash-card">
+            <div class="dlabel">Egresos reales del mes</div>
+            <div class="dvalue">${fmt(spentExp)}</div>
+            <div class="item-sub">${totalExpBudget>0?`${Math.round(spentExp/totalExpBudget*100)}% del límite`:''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  /* ---------- Metas de ahorro ---------- */
   window.openGoalSheet=function(id){const g=id?state.goals.find(x=>x.id===id):null;openSheet(g?'Editar meta':'Nueva meta de ahorro',`<div class="field"><label>Nombre</label><input id="goalName" maxlength="40" value="${escapeHtml(g?.name||'')}" placeholder="Ej. Fondo de emergencia"></div><div class="field"><label>Objetivo</label><input id="goalTarget" type="number" inputmode="decimal" step="0.01" value="${g?.target||''}"></div><div class="field"><label>Ahorrado actualmente</label><input id="goalSaved" type="number" inputmode="decimal" step="0.01" value="${g?.saved||0}"></div><div class="field"><label>Fecha objetivo (opcional)</label><input id="goalDate" type="date" value="${g?.targetDate||''}"></div><button class="btn btn-primary" onclick="saveGoal('${id||''}')">Guardar</button>`)};
   window.saveGoal=function(id){const name=document.getElementById('goalName').value.trim(),target=parseFloat(document.getElementById('goalTarget').value),saved=parseFloat(document.getElementById('goalSaved').value)||0;if(!name||!(target>0)){toast('Completa nombre y objetivo');return}const obj={name,target,saved:Math.max(0,saved),targetDate:document.getElementById('goalDate').value};if(id)Object.assign(state.goals.find(x=>x.id===id),obj);else state.goals.push(Object.assign({id:uid(),createdAt:Date.now()},obj));save();closeSheet();renderAllV15();toast('Meta guardada')};
   window.deleteGoal=function(id){if(confirm('¿Eliminar esta meta?')){state.goals=state.goals.filter(x=>x.id!==id);save();renderAllV15()}};
   window.renderGoals=function(){const el=document.getElementById('goalsList');if(!el)return;if(!state.goals.length){el.innerHTML='<div class="subtle">No hay metas de ahorro.</div>';return}el.innerHTML=state.goals.map(g=>{const pct=Math.min(100,g.saved/g.target*100);return `<div class="goal-item"><div class="item-row"><div class="item-main"><div class="item-title">🎯 ${escapeHtml(g.name)}</div><div class="item-sub">${fmt(g.saved)} de ${fmt(g.target)}${g.targetDate?' · '+formatDate(g.targetDate):''}</div></div><div class="item-actions"><button class="icon-btn" onclick="openGoalSheet('${g.id}')">✏️</button><button class="icon-btn" onclick="deleteGoal('${g.id}')">✕</button></div></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join('')};
 
-  window.renderDashboard=function(){const el=document.getElementById('dashboardHome');if(!el)return;const tx=monthTx(),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0),net=inc-exp,avail=available(),due=recurringDue();el.innerHTML=`<div class="dash-grid"><div class="dash-card"><div class="dlabel">Disponible</div><div class="dvalue ${avail>=0?'pos':'neg'}">${fmtSigned(avail)}</div><div class="item-sub">Después de recurrentes vencidos</div></div><div class="dash-card"><div class="dlabel">Ahorro del mes</div><div class="dvalue ${net>=0?'pos':'neg'}">${fmtSigned(net)}</div><div class="item-sub">${fmt(inc)} ingresos · ${fmt(exp)} egresos</div></div><div class="dash-card"><div class="dlabel">Recurrentes</div><div class="dvalue">${fmt(due)}</div><div class="item-sub">Comprometidos este mes</div></div><div class="dash-card"><div class="dlabel">Presupuestos</div><div class="dvalue">${state.budgets.length}</div><div class="item-sub">${state.budgets.filter(b=>budgetSpent(b)>b.amount).length} excedidos</div></div></div>`};
+  window.renderDashboard=function(){const el=document.getElementById('dashboardHome');if(!el)return;const tx=monthTx(),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0),net=inc-exp,avail=available(),due=recurringDue();el.innerHTML=`<div class="dash-grid"><div class="dash-card"><div class="dlabel">Disponible</div><div class="dvalue ${avail>=0?'pos':'neg'}">${fmtSigned(avail)}</div><div class="item-sub">Después de recurrentes vencidos</div></div><div class="dash-card"><div class="dlabel">Ahorro del mes</div><div class="dvalue ${net>=0?'pos':'neg'}">${fmtSigned(net)}</div><div class="item-sub">${fmt(inc)} ingresos · ${fmt(exp)} egresos</div></div><div class="dash-card"><div class="dlabel">Recurrentes</div><div class="dvalue">${fmt(due)}</div><div class="item-sub">Comprometidos este mes</div></div><div class="dash-card"><div class="dlabel">Presupuestos</div><div class="dvalue">${state.budgets.length + state.incomeBudgets.length}</div><div class="item-sub">${state.budgets.filter(b=>budgetSpent(b)>b.amount).length} excedidos</div></div></div>`};
 
   window.renderRecurringV15=function(){const el=document.getElementById('recurringList');if(!el)return;const rs=state.recurring||[];const due=rs.filter(r=>r.active!==false&&nextDueDate(r)<=today()).length;document.getElementById('recurringSummary').innerHTML=rs.length?`<div class="subtle">${rs.length} programados · ${due} pendientes de registrar</div>`:'';if(!rs.length){el.innerHTML='<div class="empty"><span class="big">🔁</span>Sin pagos o cobros programados.</div>';return}el.innerHTML=rs.map(r=>{const d=nextDueDate(r),active=r.active!==false,over=active&&d<=today();return `<div class="tx" style="margin-bottom:10px;flex-wrap:wrap;opacity:${active?1:.62}"><div class="tx-icon" style="background:${r.kind==='income'?'rgba(46,204,113,.15)':'rgba(255,92,92,.15)'};color:${r.kind==='income'?'var(--green)':'var(--red)'}">${r.kind==='income'?'📥':'📤'}</div><div class="tx-body"><div class="tx-title">${escapeHtml(r.description)}</div><div class="tx-meta"><span>${freqLabel(r.frequency)}</span><span class="badge ${over?'due':''}">${active?'Próx: '+formatDate(d):'Pausado'}</span></div></div><div class="tx-amt ${r.kind==='income'?'pos':'neg'}">${r.kind==='income'?'+':'-'}${fmt(r.amount)}</div><div class="item-actions"><button class="icon-btn" onclick="toggleRecurringV15('${r.id}')">${active?'⏸️':'▶️'}</button><button class="icon-btn" onclick="applyRecurringV15('${r.id}')">✓</button></div></div>`}).join('')};
   window.toggleRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r)return;r.active=r.active===false;save();renderAllV15();toast(r.active?'Recurrente activado':'Recurrente pausado')};
-  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}applyRecurring(id);};
+  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}state.transactions.push({id:uid(),kind:r.kind,amount:r.amount,description:r.description,categoryId:r.categoryId||'',accountId:r.accountId,date:d,createdAt:Date.now(),recurringId:r.id});r.lastAppliedDate=d;save();closeSheet();renderAllV15();toast('Movimiento registrado')};
 
   function historicalLiability(l,date){let bal=l.initialAmount||0;const hist=(l.history||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));for(const h of hist){if(h.date>date)break;if(h.action==='created'){bal=h.amount}else if(h.action==='increase'){bal+=h.amount}else if(h.action==='payment'||h.action==='settled'){bal-=h.amount}else if(h.action==='adjustment'){bal+=h.amount}}return Math.max(0,bal)}
   function historicalAsset(a,date){if(a.createdAt&&new Date(a.createdAt).toISOString().slice(0,10)>date)return 0;let val=assetCurrentValue(a);const vs=(a.valuations||[]).filter(v=>v.date<=date).sort((x,y)=>x.date.localeCompare(y.date));if(vs.length)val=vs[vs.length-1].value;if(a.status==='sold'&&a.soldDate&&a.soldDate<=date)return 0;return val}
@@ -2377,9 +2405,8 @@ renderAll();
 
   function monthlyData(n=6){const out=[];const d=new Date();d.setDate(1);for(let i=n-1;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1),y=new Date(d.getFullYear(),d.getMonth()-i+1,0),from=x.toISOString().slice(0,10),to=y.toISOString().slice(0,10),tx=state.transactions.filter(t=>t.date>=from&&t.date<=to),inc=tx.filter(t=>t.kind==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.kind==='expense').reduce((s,t)=>s+t.amount,0);out.push({label:x.toLocaleDateString('es-MX',{month:'short'}),inc,exp,nw:calcNetWorthAtV15(to)});}return out}
   window.renderReportsV15=function(){const d=monthlyData(6),el=document.getElementById('reportTrend');if(el){const max=Math.max(1,...d.flatMap(x=>[x.inc,x.exp]));el.innerHTML='<div class="trend-wrap">'+d.map(x=>`<div class="trend-row"><span>${x.label}</span><div class="trend-bars"><i class="trend-bar" style="height:${Math.max(3,x.inc/max*100)}%" title="Ingreso"></i><i class="trend-bar exp" style="height:${Math.max(3,x.exp/max*100)}%" title="Egreso"></i></div><strong>${fmtSigned(x.inc-x.exp)}</strong></div>`).join('')+'</div>'}
-    const cmp={};d.forEach(()=>{});const cur=monthTx();cur.filter(t=>t.kind==='expense').forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';cmp[k]=(cmp[k]||0)+t.amount});const prevStart=new Date();prevStart.setDate(1);prevStart.setMonth(prevStart.getMonth()-1);const prevFrom=prevStart.toISOString().slice(0,10),prevTo=new Date(prevStart.getFullYear(),prevStart.getMonth()+1,0).toISOString().slice(0,10);state.transactions.filter(t=>t.kind==='expense'&&t.date>=prevFrom&&t.date<=prevTo).forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';if(!cmp[k])cmp[k]=0;cmp[k]-=t.amount});const ce=document.getElementById('reportCompare');if(ce){const rows=Object.entries(cmp).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,12);ce.innerHTML=rows.length?`<div class="compare-row"><strong>Categoría</strong><strong>Mes</strong><strong>Δ vs ant.</strong></div>`+rows.map(([k,delta])=>{const curv=budgetSpent({categoryId:(state.categories.find(c=>c.name===k)?.id||'' )});const prevv=Math.max(0,curv-delta);return `<div class="compare-row"><span>${escapeHtml(k)}</span><span>${fmt(curv)}</span><span class="${delta<=0?'delta-pos':'delta-neg'}">${delta<=0?'▼':'▲'} ${fmt(Math.abs(delta))}</span></div>`}).join(''):'<div class="subtle">Aún no hay egresos para comparar.</div>'}}
+    const cmp={};const cur=monthTx();cur.filter(t=>t.kind==='expense').forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';cmp[k]=(cmp[k]||0)+t.amount});const prevStart=new Date();prevStart.setDate(1);prevStart.setMonth(prevStart.getMonth()-1);const prevFrom=prevStart.toISOString().slice(0,10),prevTo=new Date(prevStart.getFullYear(),prevStart.getMonth()+1,0).toISOString().slice(0,10);state.transactions.filter(t=>t.kind==='expense'&&t.date>=prevFrom&&t.date<=prevTo).forEach(t=>{const c=getCategory(t.categoryId);const k=c?.name||'Sin categoría';if(!cmp[k])cmp[k]=0;cmp[k]-=t.amount});const ce=document.getElementById('reportCompare');if(ce){const rows=Object.entries(cmp).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,12);ce.innerHTML=rows.length?`<div class="compare-row"><strong>Categoría</strong><strong>Mes</strong><strong>Δ vs ant.</strong></div>`+rows.map(([k,delta])=>{const curv=budgetSpent({categoryId:(state.categories.find(c=>c.name===k)?.id||'' )});const prevv=Math.max(0,curv-delta);return `<div class="compare-row"><span>${escapeHtml(k)}</span><span>${fmt(curv)}</span><span class="${delta<=0?'delta-pos':'delta-neg'}">${delta<=0?'▼':'▲'} ${fmt(Math.abs(delta))}</span></div>`}).join(''):'<div class="subtle">Aún no hay egresos para comparar.</div>'}}
 
-  window.editTransfer=window.editTransfer||function(){};
   window.saveTransferV15=function(){
     const fromId=document.getElementById('trFrom').value,toId=document.getElementById('trTo').value,amount=parseFloat(document.getElementById('trAmount').value),desc=document.getElementById('trDesc').value.trim(),date=document.getElementById('trDate').value||today();
     if(!fromId||!toId||fromId===toId||!(amount>0)){toast('Revisa cuentas y monto');return}
@@ -2389,19 +2416,15 @@ renderAll();
     if(editing){Object.assign(editing,{amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date});toast('Transferencia actualizada')}else{state.transactions.push({id:uid(),kind:'transfer',amount,description:desc||`Transferencia: ${fromAcc.name} → ${toAcc.name}`,accountId:fromId,toAccountId:toId,date,createdAt:Date.now()});toast('Transferencia registrada')}
     save();closeSheet();renderAllV15();
   };
-  window.applyRecurringV15=function(id){const r=state.recurring.find(x=>x.id===id);if(!r||r.active===false)return;const d=nextDueDate(r);if(d>today()){toast('Todavía no está pendiente');return}state.transactions.push({id:uid(),kind:r.kind,amount:r.amount,description:r.description,categoryId:r.categoryId||'',accountId:r.accountId,date:d,createdAt:Date.now(),recurringId:r.id});r.lastAppliedDate=d;save();closeSheet();renderAllV15();toast('Movimiento registrado')};
 
   window.renderAllV15=function(){
     migrateV15();
     renderHeader();renderHome();renderAccounts();renderPatrimony();renderCategories();renderReports();renderFilterAccount();renderReportAccountFilter();
-    renderMovementsV15();renderRecurringV15();renderBudgets();renderGoals();renderDashboard();renderReportsV15();
+    renderMovementsV15();renderRecurringV15();renderBudgets();renderIncomeBudgets();renderBudgetSummary();renderGoals();renderDashboard();renderReportsV15();
   };
-  // Replace action rendering without changing the original storage model.
   const originalRenderAll=window.renderAll; window.renderAll=renderAllV15;
-  // Refresh account filter and bind live movement filters.
   function bindFilters(){['txSearch','filterKind','filterFrom','filterTo','filterAccount'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.dataset.v15){e.dataset.v15='1';e.addEventListener('input',renderMovementsV15);e.addEventListener('change',renderMovementsV15)}})}
   const oldRenderFilterAccount=window.renderFilterAccount;window.renderFilterAccount=function(){oldRenderFilterAccount();bindFilters()};
-  // Initial pass after all overrides exist.
   migrateV15();renderAllV15();bindFilters();
 })();
 </script>
